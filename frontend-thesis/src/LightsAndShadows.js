@@ -1,12 +1,41 @@
-import React, {useRef} from 'react';
-import {OrbitControls, useHelper} from '@react-three/drei'
+import React, {useEffect, useRef} from 'react';
+import {OrbitControls, PerspectiveCamera, useHelper} from '@react-three/drei'
 import {DirectionalLightHelper} from "three";
+import { useFrame} from "@react-three/fiber";
+import { useKeyboardControls} from "@react-three/drei";
+import {useNumSpheres} from "./NumSpheresContext";
 
 export default function LightsAndShadows() {
 
     const dirLight = useRef();
+    const cameraRef = useRef();
 
-    useHelper(dirLight, DirectionalLightHelper)
+
+    const [subscribeKeys, getKeys] = useKeyboardControls()
+
+    // useHelper(dirLight, DirectionalLightHelper)
+
+
+    let { numSpheres, incrementNumSpheres } = useNumSpheres();
+
+    const jump = () => {
+        incrementNumSpheres();
+    };
+    // console.log(numSpheres)
+
+    useEffect(() => {
+        subscribeKeys(
+            (state) => state.jump,
+            (value) => {
+                if (value) {
+                    jump();
+                }
+            }
+        );
+    }, [numSpheres]);
+
+
+
 
     return <>
 
@@ -31,5 +60,7 @@ export default function LightsAndShadows() {
             /*color={'#cadcde'}            */
 
         />
+
+
     </>
 }

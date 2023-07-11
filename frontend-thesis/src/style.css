@@ -24,6 +24,19 @@ body,
     user-select: none;
 }
 
+.features > div
+{
+    font-family: Helvetica, Arial;
+    position: absolute;
+    background: #ffffff88;
+    color: black;
+    padding: 15px;
+    white-space: nowrap;
+    overflow: hidden;
+    border-radius: 30px;
+    user-select: none;
+}
+
 
 
 

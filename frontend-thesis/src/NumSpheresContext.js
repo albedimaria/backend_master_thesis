@@ -1,21 +1,24 @@
-import React, { createContext, useState } from 'react';
+import React, { createContext, useState } from 'react'
 
 // Create the context
 const NumSpheresContext = createContext();
 
 // Create a provider component
 export function NumSpheresProvider({ children }) {
-    const [numSpheres, setNumSpheres] = useState(10);
 
-    // Define any functions to update the numSpheres value here
-    // For example, you can create an increment function:
+    const [numSpheres, setNumSpheres] = useState(7);
+
     const incrementNumSpheres = () => {
-        setNumSpheres(prevNumSpheres => prevNumSpheres + 1);
+        setNumSpheres((prevNumSpheres) => prevNumSpheres + 1)
     };
 
-    // Pass the numSpheres value and functions through the context provider
+    const decrementNumSpheres = () => {
+        setNumSpheres((prevNumSpheres) => (prevNumSpheres === 1 ? 1 : prevNumSpheres - 1));
+    };
+
+
     return (
-        <NumSpheresContext.Provider value={{ numSpheres, incrementNumSpheres }}>
+        <NumSpheresContext.Provider value={{ numSpheres, setNumSpheres, incrementNumSpheres, decrementNumSpheres }}>
             {children}
         </NumSpheresContext.Provider>
     );

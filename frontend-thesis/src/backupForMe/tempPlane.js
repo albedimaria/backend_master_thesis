@@ -1,105 +1,148 @@
-import React, {useRef, useEffect, useMemo} from "react";
-import {Physics, Debug, RigidBody, InstancedRigidBodies, CuboidCollider} from "@react-three/rapier";
-import * as THREE from "three";
-import {MeshReflectorMaterial} from "@react-three/drei";
-import ReactDOM from'react-dom';
-import { Html, PivotControls} from "@react-three/drei";
-import {button, folder, useControls} from 'leva';
+import * as THREE from 'three'
+import {Html, MeshReflectorMaterial, useHelper, useKeyboardControls} from '@react-three/drei'
+import './style.css'
+import {Debug, InstancedRigidBodies, Physics, RigidBody} from "@react-three/rapier";
+import {useEffect, useRef, useState} from "react";
+import {useLabels} from "./LabelsContext";
+import {useOptions, useOptionsX} from "./OptionsContext";
+import {useNumSpheres} from "./NumSpheresContext";
 
-import { useNumSpheres } from '../NumSpheresContext';
-import '../style.css'
-import { useLocalStorage } from 'react-use';
-import {Debug, BallCollider ,Physics, RigidBody} from "@react-three/rapier";
+THREE.ColorManagement.legacyMode = false
 
-import {useFrame} from "@react-three/fiber";
+const boxGeometry = new THREE.BoxGeometry(1, 1, 1)
+const boxMaterial = new THREE.MeshStandardMaterial({ color: '#000000'})
 
 
-export default function Plane() {
+
+function PlaneStart() {
+    const heightPlane = 0.2;
+    const planeRef = useRef();
+    const axisRefs = useRef([]);
+
+    const { selectedOptionX, selectedOptionY, selectedOptionZ } = useOptions()
+    const {BPM, Texture, Mood, Danceability} = useLabels()
+    const { numSpheres } = useNumSpheres()
+
+    const scalingFactor = { x: 40, y: heightPlane / 2, z: numSpheres * 2 };
+
+    const leftClick = (event) =>
+    {
+        console.log('left click occurred')
+
+    }
+
+    const longLeftClick = (event) => {
+        planeRef.current.material.color.set(`hsl(${Math.random() * 360}, 100%, 75%)`)
+    }
+
+    const doubleLeftClick = (event) => {
+        // planeRef.current.material.color.set(`hsl(${Math.random() * 360}, 100%, 75%)`)
+        console.log('DOUBLE')
+    }
+
+    const onPointerOver = (event) => {
+        // planeRef.current.material.color.set(`hsl(${Math.random() * 360}, 100%, 75%)`)
+
+        console.log('crossed paths')
+    }
+
+    const onClick = (event) => {
+    }
+
+
+
+    const getLabelText = (option) => {
+        switch (option) {
+            case 'BPM':
+                return BPM;
+            case 'Texture':
+                return Texture;
+            case 'Mood':
+                return Mood;
+            case 'Danceability':
+                return Danceability;
+            default:
+                return '';
+        }
+    };
+
+    const getLabelX = () => getLabelText(selectedOptionX);
+    const getLabelY = () => getLabelText(selectedOptionY);
+    const getLabelZ = () => getLabelText(selectedOptionZ);
+
+
 
     return (
         <>
-            <Physics gravity={[0, -10, 0]}>
+            {/*            <Physics gravity={[0, -5, 0]}>
+                <RigidBody type={"fixed"}>*/}
+            <group>
+                <mesh
+                    // onClick={ leftClick }
+                    // onContextMenu={ longLeftClick }
 
-                <Debug/>
+                    // onDoubleClick={ doubleLeftClick }
 
-                <RigidBody type={"fixed"}
-                           ref={planeRigid}
-                           colliders="cuboid"
-                           restitution={0}
-                           friction={0}
-
-                >
-
-                    <mesh
-                        ref={planeRef}
-                        scale={[scaling.x, scaling.y, 0.1]}
-                        position={[0, -0.5, 0]}
-                        rotation-x={-Math.PI / 2}
-                        onClick={() => {
-                            planeJump()
-                            console.log(planeRigid.current)
-                        }
-                        }
+                    // HIGH CPU PERFORMANCE
+                    // onPointerEnter={ () => {document.body.style.cursor = 'pointer'} }
+                    // onPointerLeave={ () => {document.body.style.cursor = 'default'} }
 
 
+                    ref={planeRef}
+                    geometry={boxGeometry}
+                    material={boxMaterial}
+                    scale={[scalingFactor.x, scalingFactor.y, scalingFactor.z]}
+                    // receiveShadow
+                    position={[scalingFactor.x / 2, -heightPlane / 4, 0]}
+                />
+            </group>
+            {/*  </RigidBody>*/}
+
+            {/*   <InstancedRigidBodies
                     >
-                        <boxGeometry args={[1, 1, 1]}/>
-                        <MeshReflectorMaterial
-                            resolution={1024}
-                            blur={[1000, 10]}
-                            mix={0.2}
-                            side={THREE.DoubleSide}
-                            mirror={1}
-                        />
-                    </mesh>
-
-                </RigidBody>
-
-                <RigidBody
-                    position={[0, 0, 0]}
-                    type="kinematicPosition"
-                    ref={twister}
-                    onCollisionExit={() => {
-                        console.log('collision exit')
-                    }}
-                >
-                    <mesh castShadow scale={[0.4, 0.4, 3]}>
-                        <boxGeometry/>
-                        <meshStandardMaterial color="red"/>
-                    </mesh>
+                        <instancedMesh
+                            position={[Math.random() * 10 + 10, 15, 0]}
+                            args={[null, null, 3]}
+                        >
+                            <sphereGeometry />
+                            <meshStandardMaterial color={'#ffffff'} />
+                        </instancedMesh>
+                    </InstancedRigidBodies>*/}
 
 
-                </RigidBody>
-
-                <RigidBody
-                    position={[0, 10, 0]}
-                >
-                    <mesh castShadow scale={[0.4, 0.4, 3]}>
-                        <boxGeometry/>
-                        <meshStandardMaterial color="green"/>
-                    </mesh>
-                </RigidBody>
-
-                <RigidBody type="fixed">
-                    <CuboidCollider args={[5, 2, 0.5]} position={[0, 1, 5.5]}/>
-                    <CuboidCollider args={[5, 2, 0.5]} position={[0, 1, -5.5]}/>
-                    <CuboidCollider args={[0.5, 2, 5]} position={[5.5, 1, 0]}/>
-                    <CuboidCollider args={[0.5, 2, 5]} position={[-5.5, 1, 0]}/>
-                </RigidBody>
-
-                <InstancedRigidBodies
-                    positions={cubesTransforms.positions}
-                    rotations={cubesTransforms.rotations}
-                    scales={cubesTransforms.scales}
-                >
-                    <instancedMesh castShadow ref={cubes} args={[null, null, 1]}>
-                        <boxGeometry/>
-                        <meshStandardMaterial color="blue"/>
-
-                    </instancedMesh>
-                </InstancedRigidBodies>
-
+            {/*
             </Physics>
+*/}
+
+
+
+            <axesHelper scale={[scalingFactor.x, scalingFactor.x / 3, scalingFactor.z]} position={[0, 0, -scalingFactor.z / 2]} />
+
+            <group>
+                <Html position={[- 2, 0, 0]} wrapperClass="label" center distanceFactor={18} occlude={[planeRef, axisRefs.current[0]]}            >
+                    { getLabelZ() }
+                </Html>
+
+                <Html position={[0, scalingFactor.x / 2.5, -scalingFactor.z / 2]} wrapperClass="label" center distanceFactor={18} occlude={[planeRef, axisRefs.current[1]]}>
+                    { getLabelY() }
+                </Html>
+
+                <Html position={[scalingFactor.x / 2, -1, scalingFactor.x / 4 -2]} wrapperClass="label" center distanceFactor={18} occlude={[planeRef, axisRefs.current[2]]}>
+                    { getLabelX() }
+                </Html>
+            </group>
+
+
+            {/*<gridHelper args={[scalingFactor.x, scalingFactor.z]} position={[0, 0, 0]} />*/}
         </>
     );
+}
+
+
+
+export default function Plane()
+{
+    return <>
+        <PlaneStart/>
+    </>
 }
