@@ -6,7 +6,7 @@ const SlidersContext = createContext();
 
 export const SlidersProvider = ({ children }) => {
 
-    const { BPM, Texture, Mood, Danceability, MoodChoices } = useLabels();
+    const { BPM_label, Texture_label, Mood_label, Danceability_label, MoodChoicesLabels } = useLabels();
 
     const [moodSelected, setMoodSelected] = useState('NoMood');
     const [bpmSelected, setBpmSelected] = useState(90);
@@ -20,7 +20,7 @@ export const SlidersProvider = ({ children }) => {
                 min: 20,
                 max: 200,
                 step: 1,
-                label: BPM,
+                label: "max "+ BPM_label,
                 onChange: (value) => setBpmSelected(value),
             },
             textureSlider: {
@@ -28,7 +28,7 @@ export const SlidersProvider = ({ children }) => {
                 min: 0,
                 max: 5,
                 step: 1,
-                label: <span>{Texture}<br />layers</span>,
+                label: <span>{Texture_label}<br />layers</span>,
                 onChange: (value) => setTextureSelected(value),
             },
             danceabilitySlider: {
@@ -36,13 +36,13 @@ export const SlidersProvider = ({ children }) => {
                 min: 0,
                 max: 100,
                 step: 1,
-                label: <span>min % of <br />{Danceability}</span>,
+                label: <span>max % of <br />{Danceability_label}</span>,
                 onChange: (value) => setDanceabilitySelected(value),
             },
             moodSelector: {
-                options: MoodChoices,
+                options: MoodChoicesLabels,
                 value: moodSelected,
-                label: Mood,
+                label: Mood_label,
                 onChange: (value) => setMoodSelected(value),
             },
         }),

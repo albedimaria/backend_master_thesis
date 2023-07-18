@@ -1,17 +1,17 @@
 import {OrbitControls} from "@react-three/drei";
 import React from "react";
-import LightsAndShadows from "./LightsAndShadows";
-import Plane from "./Plane.js";
+import LightsAndShadows from "./components/LightsAndShadows";
+import Plane from "./components/Plane.js";
 import { Physics, Debug} from "@react-three/rapier";
-import Spheres from "./Spheres";
-import {NumSpheresProvider} from "./NumSpheresContext";
+import Spheres from "./components/Spheres";
+import {NumSpheresProvider} from "./contexts/NumSpheresContext";
 import {Perf} from "r3f-perf";
-import {LabelsProvider} from "./LabelsContext";
-import {OptionsProvider} from "./OptionsContext";
-import WelcomeText from "./WelcomeText";
-import Popup from "./Popup";
-import {SlidersProvider} from "./SlidersContext";
-import {SpherePropertiesProvider} from "./SpherePropertiesContext";
+import {LabelsProvider} from "./contexts/LabelsContext";
+import {OptionsProvider} from "./contexts/OptionsContext";
+import WelcomeText from "./components/WelcomeText";
+import Popup from "./components/Popup";
+import {SlidersProvider} from "./contexts/SlidersContext";
+import {SpherePropertiesProvider} from "./contexts/SpherePropertiesContext";
 
 
 export default function Experience(){
@@ -28,15 +28,17 @@ export default function Experience(){
                     <LabelsProvider>
                         <SlidersProvider>
                             <OptionsProvider>
+                                <SpherePropertiesProvider>
 
-                                SpherePropertiesProvider
-                                <WelcomeText />
-                                <Popup />
-                                <Spheres />
-                                <Plane />
-                                <LightsAndShadows />
 
-                                SpherePropertiesProvider
+                                        <WelcomeText />
+                                        <Popup />
+                                        <Spheres />
+                                        <Plane />
+                                        <LightsAndShadows />
+
+
+                                </SpherePropertiesProvider>
                             </OptionsProvider>
                         </SlidersProvider>
                     </LabelsProvider>

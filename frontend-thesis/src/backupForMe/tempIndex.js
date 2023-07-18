@@ -4,12 +4,12 @@ import {Canvas} from "@react-three/fiber";
 import '../style.css';
 
 import { ACESFilmicToneMapping } from "three";
-import Plane from "../Plane";
-import Spheres from "../Spheres";
-import LightsAndShadows from "../LightsAndShadows";
+import Plane from "../components/Plane";
+import Spheres from "../components/Spheres";
+import LightsAndShadows from "../components/LightsAndShadows";
 import * as THREE from "three";
 import EntryText from "../EntryText";
-import { NumSpheresProvider } from '../NumSpheresContext';
+import { NumSpheresProvider } from '../contexts/NumSpheresContext';
 import {Leva} from "leva";
 
 

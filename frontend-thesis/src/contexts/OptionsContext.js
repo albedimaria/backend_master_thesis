@@ -1,46 +1,46 @@
-import React, { createContext, useState } from 'react';
+import React, {createContext, useEffect, useState} from 'react';
 import { button, folder, useControls } from 'leva';
 import { useLabels } from './LabelsContext';
 
 const OptionsContext = createContext();
-
 export const OptionsProvider = ({ children }) => {
     const [selectedOptionX, setSelectedOptionX] = useState('BPM');
     const [selectedOptionY, setSelectedOptionY] = useState('Texture');
-    const [selectedOptionZ, setSelectedOptionZ] = useState('Texture');
+    const [selectedOptionZ, setSelectedOptionZ] = useState('Mood');
 
-    const { BPM, Texture, Mood, Danceability } = useLabels();
+    const { BPM, Texture, Mood, Danceability, MoodChoices, OptionsLabels } = useLabels();
 
     const [, set] = useControls('axis controls', () => ({
         xAxis: {
-            options: [BPM, Texture, Mood, Danceability],
+            options: OptionsLabels,
             value: selectedOptionX,
             onChange: (value) => setSelectedOptionX(value),
             label: 'X Axis',
         },
         yAxis: {
-            options: [BPM, Texture, Mood, Danceability],
+            options: OptionsLabels,
             value: selectedOptionY,
             onChange: (value) => setSelectedOptionY(value),
             label: 'Y Axis',
         },
         zAxis: {
-            options: [BPM, Texture, Mood, Danceability],
+            options: OptionsLabels,
             value: selectedOptionZ,
             onChange: (value) => setSelectedOptionZ(value),
             label: 'Z Axis',
         },
     }));
 
+
     return (
         <OptionsContext.Provider
             value={{
                 selectedOptionX,
-                setSelectedOptionX,
+                // setSelectedOptionX,
                 selectedOptionY,
-                setSelectedOptionY,
+                // setSelectedOptionY,
                 selectedOptionZ,
-                setSelectedOptionZ,
+                // setSelectedOptionZ,
             }}
         >
             {children}

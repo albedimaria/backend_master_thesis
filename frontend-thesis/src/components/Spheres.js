@@ -1,18 +1,17 @@
 import * as THREE from 'three';
 import { Debug, InstancedRigidBodies, Physics, RapierRigidBody, RigidBody} from "@react-three/rapier";
-import { useEffect, useMemo, useRef, useState} from "react";
+import {useCallback, useEffect, useMemo, useRef, useState} from "react";
 import React from "react";
 import { Html } from "@react-three/drei";
 import { button, folder, useControls} from "leva";
-import { useNumSpheres } from "./NumSpheresContext";
-import { useOptions } from "./OptionsContext";
-import { useSliders } from "./SlidersContext";
-import {useLabels} from "./LabelsContext";
-import { useSpheresProperties } from "./SpherePropertiesContext";
+import { useNumSpheres } from "../contexts/NumSpheresContext";
+import { useOptions } from "../contexts/OptionsContext";
+import { useSliders } from "../contexts/SlidersContext";
+import {useLabels} from "../contexts/LabelsContext";
+import { useSpheresProperties } from "../contexts/SpherePropertiesContext";
 
 function SpheresStart() {
     const { numSpheres, setNumSpheres, incrementNumSpheres, decrementNumSpheres } = useNumSpheres();
-    const { BPM, Mood, Texture, Danceability} = useLabels()
 
     const [sphereSegments, setSphereSegments] = useState(8);
     const [visible, setVisible] = useState(true)
@@ -75,7 +74,7 @@ function SpheresStart() {
             BPM: (i) => ((i / numSpheres) * 20 + 10).toFixed(1),
             Texture: (i) => (numSpheres / 2 - 1),
             Danceabilty: (i) => numSpheres / 4 - 2,
-            Mood: (i) => -i + numSpheres,
+            Mood: (i) => -i + numSpheres -2,
         };
 
         const positionX = optionCalculations[selectedOptionX]?.(i) || 0;
@@ -85,15 +84,6 @@ function SpheresStart() {
         return [positionX, positionY, positionZ];
 
     };
-
-
-    // FILTERS
-    const {
-        bpmSelected, setBpmSelected,
-        textureSelected, setTextureSelected,
-        danceabilitySelected, setDanceabilitySelected,
-        moodSelected, setMoodSelected
-    } = useSliders()
 
 
     const longLeftClick = (event) => {
@@ -111,23 +101,57 @@ function SpheresStart() {
     }, [numSpheres]);
 
 
-    // ARRAY OF PROPERTIES
-/*    const sphereData = Array.from({ length: numSpheres }, (_, i) => ({
-        bpm: getBpmForSphere(i),
-        danceability: getDanceabilityForSphere(i),
-        mood: getMoodForSphere(i),
-        // sphereData[i].index
-    }));*/
+    // ARRAYS OF PROPS
+    const { getBpm, getTexture, getDanceability, getMood } = useSpheresProperties()
+
+    const sphereData = useMemo(
+        () =>
+            Array.from({ length: numSpheres }, (_, i) => ({
+                bpm: getBpm(i),
+                danceability: getDanceability(i),
+                mood: getMood(i),
+                texture: getTexture(i),
+                // Add more properties as needed
+            })),
+        [numSpheres, getBpm, getDanceability, getMood, getTexture]
+    );
+
+    // FILTERS
+    const {        bpmSelected,        textureSelected,        danceabilitySelected,        moodSelected,    } = useSliders()
+
+    const [visibility, setVisibility] = useState([]);
+
+    // Visibility function to control individual sphere visibility
+    const calculateVisibility = useCallback(
+        (sphereProperties, bpmSelected, textureSelected, danceabilitySelected, moodSelected) => {
+            const { bpm, texture, danceability, mood } = sphereProperties;
+
+            // Add your desired logic here based on the slider values and sphere properties
+            if (bpm < bpmSelected
+              /*  && texture === textureSelected
+                && danceability < danceabilitySelected
+                && mood === moodSelected*/
+            ) {
+                return true;
+            } else {
+                return false;
+            }
+        },
+        []
+    );
+
+    const easyVisibility = calculateVisibility
+
+
 
     // USE EFFECT
     useEffect(() => {
         for (let i = 0; i < numSpheres; i++) {
 
             const [positionX, positionY, positionZ] = calculatePosition(i)
-            const visibility = calculateVisibility(i, moodSelected, textureSelected, danceabilitySelected)
-            // sphereGroupRef.current[i] = visibility ? 1 : 0;
-           const scale_for_visibility = visibility ? 1 : 0;
-
+            const sphereProperties = sphereData[i]
+            const visibility = calculateVisibility(sphereProperties, bpmSelected, textureSelected, danceabilitySelected, moodSelected)
+            const scale_for_visibility = visibility ? 1 : 0
 
             const matrix = new THREE.Matrix4();
 
@@ -139,34 +163,35 @@ function SpheresStart() {
 
             sphereGroupRef.current.setMatrixAt(i, matrix);
             sphereGroupRef.current.setColorAt(i, colors[i]);
-            console.log(`Sphere ${i} visibility: ${visibility}`);
+            // console.log(`Sphere ${i}: Visibility: ${visibility}, BPM: ${bpm_sphere}, Mood: ${mood_sphere}, Danceability: ${danceability_sphere}, Texture: ${texture_sphere}`);
 
         }
 
         sphereGroupRef.current.instanceMatrix.needsUpdate = true
         sphereGroupRef.current.instanceColor.needsUpdate = true
 
-    }, [numSpheres, selectedOptionX, selectedOptionY, selectedOptionZ, bpmSelected, moodSelected, textureSelected, danceabilitySelected])
+        console.log("re-rendering of main useEffect")
 
-    // VISIBILITY
-    const calculateVisibility = (i, moodSelected, textureSelected, danceabilitySelected) => {
-        // Add your desired logic here based on the slider values
-        if (
-            bpmSelected > 25 &&
-            moodSelected == 'NoMood' &&
-            textureSelected < 2 &&
-            danceabilitySelected > 40
-        ) {
-            return true;
-        } else {
-            return false;
-        }
-    };
-
-    const sphereData = useSpheresProperties();
-    console.log(sphereData)
+    }, [numSpheres, bpmSelected, textureSelected, danceabilitySelected, moodSelected, sphereData])
 
 
+    const getLabelContent = useCallback(
+        (option, i) => {
+            switch (option) {
+                case 'BPM':
+                    return `BPM: ${sphereData[i].bpm}`;
+                case 'Mood':
+                    return `Mood: ${sphereData[i].mood}`;
+                case 'Texture':
+                    return `Texture: ${sphereData[i].texture}`;
+                case 'Danceability':
+                    return `Danceability: ${sphereData[i].danceability}`;
+                default:
+                    return '';
+            }
+        },
+        [sphereData]
+    );
 
     // HTML
     const labelsHtml = visible
@@ -185,9 +210,13 @@ function SpheresStart() {
                 positionOpt[2] + sphereSize * 1.4 + 0.3
             ]
 
+
+
             return (
 
-                calculateVisibility(i, moodSelected, textureSelected, danceabilitySelected) && (
+                // calculateVisibility(i, moodSelected, textureSelected, danceabilitySelected)
+                true
+                && (
                     <group key={i}>
                         <Html
                             position={positionLabels}
@@ -197,7 +226,8 @@ function SpheresStart() {
                             occlude={[sphereGroupRef, ...labelRef.current]}
                             ref={(ref) => (labelRef.current[i] = ref)}
                         >
-                            Sphere {i}
+                            {/*Sphere {i}*/}
+                            Sphere {Math.random() * 10}
                         </Html>
 
                         <Html
@@ -208,9 +238,9 @@ function SpheresStart() {
                             occlude={[sphereGroupRef, ...labelRef.current]}
                             // onClick={() => handleLeftClick(i)}
                         >
-                            {selectedOptionX} : {positionLabels[0]} <br />
-                            {selectedOptionY}: {positionLabels[1]} <br />
-                            {selectedOptionZ}: {positionLabels[2]} <br />
+                            {`${getLabelContent(selectedOptionX, i)}`} <br />
+                            {`${getLabelContent(selectedOptionY, i)}`} <br />
+                            {`${getLabelContent(selectedOptionZ, i)}`} <br />
                         </Html>
                     </group>
                 )

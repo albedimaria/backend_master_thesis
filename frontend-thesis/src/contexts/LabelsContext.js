@@ -5,11 +5,12 @@ const LabelsContext = createContext();
 export const LabelsProvider = ({ children }) => {
 
     const labels = {
-        BPM: "BPM",
-        Texture: "Texture",
-        Mood: "Mood",
-        Danceability: "Danceability",
-        MoodChoices: ['happy', 'sad', 'purple', 'calm', 'excited']
+        BPM_label: "BPM",
+        Texture_label: "Texture",
+        Mood_label: "Mood",
+        Danceability_label: "Danceability",
+        MoodChoicesLabels: ['happy', 'sad', 'purple', 'calm', 'excited'],
+        OptionsLabels: ['BPM', 'Texture', 'Mood', 'Danceability'],
     };
 
 
