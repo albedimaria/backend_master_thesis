@@ -20,10 +20,14 @@ function PlaneStart() {
     const axisRefs = useRef([]);
 
     const { selectedOptionX, selectedOptionY, selectedOptionZ } = useOptions()
-    const {BPM_label, Texture_label, Mood_label, Danceability_label} = useLabels()
+    const {
+        BPM_label, Texture_label, Key_label,
+        Instrumental_label, Mood_label, Danceability_label
+    } = useLabels()
+
     const { numSpheres } = useNumSpheres()
 
-    const scalingFactor = { x: 40, y: heightPlane / 2, z: numSpheres * 2 };
+    const scalingFactor = { x: 30 + numSpheres / 5, y: heightPlane / 2, z: 10 + numSpheres / 2 };
 
     const leftClick = (event) =>
     {
@@ -61,6 +65,10 @@ function PlaneStart() {
                 return Mood_label;
             case 'Danceability':
                 return Danceability_label;
+            case 'Key':
+                return Key_label;
+            case 'Instrumental':
+                return Instrumental_label;
             default:
                 return '';
         }
@@ -123,7 +131,7 @@ function PlaneStart() {
                     { getLabelZ() }
                 </Html>
 
-                <Html position={[0, scalingFactor.x / 2.5, -scalingFactor.z / 2]} wrapperClass="label" center distanceFactor={18} occlude={[planeRef, axisRefs.current[1]]}>
+                <Html position={[0, scalingFactor.x / 2.7, -scalingFactor.z / 2]} wrapperClass="label" center distanceFactor={18} occlude={[planeRef, axisRefs.current[1]]}>
                     { getLabelY() }
                 </Html>
 
@@ -133,7 +141,9 @@ function PlaneStart() {
             </group>
 
 
-            {/*<gridHelper args={[scalingFactor.x, scalingFactor.z]} position={[0, 0, 0]} />*/}
+{/*
+            <gridHelper args={[scalingFactor.x, scalingFactor.x / 3, scalingFactor.z]} position={[scalingFactor.x / 2, 0, -scalingFactor.z / 2 - 1]} />
+*/}
         </>
     );
 }

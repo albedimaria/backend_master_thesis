@@ -9,8 +9,13 @@ export const LabelsProvider = ({ children }) => {
         Texture_label: "Texture",
         Mood_label: "Mood",
         Danceability_label: "Danceability",
-        MoodChoicesLabels: ['happy', 'sad', 'purple', 'calm', 'excited'],
-        OptionsLabels: ['BPM', 'Texture', 'Mood', 'Danceability'],
+        Key_label: "Key",
+        Instrumental_label: "Instrumental",
+
+        MoodChoicesLabels: ['all moods', 'noMood', 'happy', 'sad', 'purple', 'calm', 'excited'],
+        InstrumentalChoicesLabels: ['all instrs', 'drums', 'horn', 'sax', 'piano', 'guitar'],
+        KeyChoicesLabels: ['all keys', 'A', 'B', 'C', 'D', 'E', 'F', 'G'],
+        OptionsLabels: ['BPM', 'Texture', 'Mood', 'Danceability', 'Instrumental', 'Key'],
     };
 
 

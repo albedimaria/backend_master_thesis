@@ -17,7 +17,7 @@ import {SpherePropertiesProvider} from "./contexts/SpherePropertiesContext";
 export default function Experience(){
     return <>
 
-        <OrbitControls enableDamping={true} makeDefault={true} target={[20, 0, 0]}/>
+        <OrbitControls enableDamping={true} makeDefault={true} target={[20, 10, 0]}/>
 
         <Perf position={"top-left"} />
 

@@ -11,84 +11,56 @@ import {useLabels} from "../contexts/LabelsContext";
 import { useSpheresProperties } from "../contexts/SpherePropertiesContext";
 
 function SpheresStart() {
-    const { numSpheres, setNumSpheres, incrementNumSpheres, decrementNumSpheres } = useNumSpheres();
 
-    const [sphereSegments, setSphereSegments] = useState(8);
+    const {
+        numSpheres, setNumSpheres,
+        sphereSegments, setSphereSegments,
+        sphereSize, setSphereSize,
+        increaseSize, decreaseSize,
+        incrementNumSpheres, decrementNumSpheres,
+        increaseResolution, decreaseResolution
+    } = useNumSpheres();
+
     const [visible, setVisible] = useState(true)
 
     const sphereGroupRef = useRef([])
 
     const labelRef = useRef([]);
 
-    const [sphereSize, setSphereSize] = useState(0.7)
     const sphereGeometry = useMemo(() => new THREE.SphereGeometry(sphereSize, sphereSegments, sphereSegments), [sphereSize, sphereSegments]);
 
-    // const [featureVisibility, setFeatureVisibility] = useState(Array(numSpheres).fill(true))
-
     // SPHERES CONTROLS
-    const [ sphereSizeControl, set] = useControls('spheres', () => ({
 
-        sphereSizeControl: {
-            value: sphereSize,
-            step: 0.1,
-            min: 0.1,
-            max: 1,
-            label: 'Sphere Size',
-            onChange: (value) => setSphereSize(value),
-        },
-
-        buttons: folder({
-            lowerResolution: button(() => {
-                setSphereSegments((prevSphereSegments) => prevSphereSegments / 2);
-            }),
-            higherResolution: button(() => {
-                setSphereSegments((prevSphereSegments) => prevSphereSegments * 2);
-            }),
-            displayAll: button(() => {
-                setVisible(true);
-            }),
-
-            addSphere: button(() => {
-                incrementNumSpheres();
-            }),
-            removeSphere: button(() => {
-                decrementNumSpheres();
-            }),
-        }),
-
-    }));
 
     // POSITION
     const {
-        selectedOptionX, setSelectedOptionX,
-        selectedOptionY, setSelectedOptionY,
-        selectedOptionZ, setSelectedOptionZ
-    } = useOptions()
+        selectedOptionX, selectedOptionY, selectedOptionZ} = useOptions()
 
-    const calculatePosition = (i) => {
-
-        const normalizeFactor = 20
-
-        const optionCalculations = {
-
-            BPM: (i) => ((i / numSpheres) * 20 + 10).toFixed(1),
-            Texture: (i) => (numSpheres / 2 - 1),
-            Danceabilty: (i) => numSpheres / 4 - 2,
-            Mood: (i) => -i + numSpheres -2,
-        };
-
-        const positionX = optionCalculations[selectedOptionX]?.(i) || 0;
-        const positionY = optionCalculations[selectedOptionY]?.(i) || 1;
-        const positionZ = optionCalculations[selectedOptionZ]?.(i) || 0;
-
-        return [positionX, positionY, positionZ];
-
+    const getSphereSize = () => {
+        return sphereSize;
     };
 
+    // ARRAYS OF PROPS
+    const { getBpm, getTexture, getDanceability, getMood, getInstrumental, getKey, getIndex, getName } = useSpheresProperties()
 
-    const longLeftClick = (event) => {
-        console.log('long left click occurred')
-    }
+    const sphereData = useMemo(
+        () =>
+            Array.from({ length: numSpheres }, (_, i) => ({
+                bpm: getBpm(i),
+                danceability: getDanceability(i),
+                mood: getMood(i),
+                texture: getTexture(i),
+                instrumental: getInstrumental(i),
+                key: getKey(i),
+                index: getIndex(i),
+                name: getName(i, getIndex, getInstrumental, getKey)
+            })),
+
+        [numSpheres, getBpm, getDanceability, getMood, getTexture, getInstrumental, getKey, getIndex, getName]
+    );
+
+    //console.log(sphereData)
+
 
     // COLORS
     const colors = useMemo(() => {
@@ -98,60 +70,175 @@ function SpheresStart() {
             colorsArray.push(color);
         }
         return colorsArray;
+
     }, [numSpheres]);
 
 
-    // ARRAYS OF PROPS
-    const { getBpm, getTexture, getDanceability, getMood } = useSpheresProperties()
+    const calculatePosition = useCallback(
+        (i) => {
+            const optionCalculations = {
+                BPM: (i) => (sphereData[i].bpm / 5),
+                Texture: (i) => (sphereData[i].texture * 5),
+                Danceability: (i) => (sphereData[i].danceability / 5),
+                Mood: (i) => colors[i].r * 10 + 2,
+                Key: (i) => i / 2,
+                Instrumental: (i) => i / 4,
+                // Name: (i) => (sphereData[i].name)
+            };
 
-    const sphereData = useMemo(
-        () =>
-            Array.from({ length: numSpheres }, (_, i) => ({
-                bpm: getBpm(i),
-                danceability: getDanceability(i),
-                mood: getMood(i),
-                texture: getTexture(i),
-                // Add more properties as needed
-            })),
-        [numSpheres, getBpm, getDanceability, getMood, getTexture]
+            const positionX = optionCalculations[selectedOptionX]?.(i) || 0;
+            const positionY = optionCalculations[selectedOptionY]?.(i) || 1;
+            const positionZ = optionCalculations[selectedOptionZ]?.(i) || 0;
+            return [positionX, positionY, positionZ];
+        },
+        [selectedOptionX, selectedOptionY, selectedOptionZ, sphereData, colors]
+
     );
 
+
+
+    const [temp, setTemp] = useState(false);
+    const longLeftClick = (event) => {
+        console.log('long left click occurred')
+        setTemp((prevTemp) => (!prevTemp))
+    }
+
+
+
     // FILTERS
-    const {        bpmSelected,        textureSelected,        danceabilitySelected,        moodSelected,    } = useSliders()
+    const {
+        bpmSelectedLow,
+        bpmSelectedHigh,
+        textureSelectedLow,
+        textureSelectedHigh,
+        textSelected,
+        danceabilitySelectedLow,
+        danceabilitySelectedHigh,
+        keySelected,
+        instrumentSelected,
+        moodSelected,
+        showSelected, setShowSelected
+    } = useSliders()
 
-    const [visibility, setVisibility] = useState([]);
 
-    // Visibility function to control individual sphere visibility
+
+
+    // VISIBILITY
     const calculateVisibility = useCallback(
-        (sphereProperties, bpmSelected, textureSelected, danceabilitySelected, moodSelected) => {
-            const { bpm, texture, danceability, mood } = sphereProperties;
+        (sphereProperties, bpmSelectedLow, bpmSelectedHigh, textureSelectedLow, textureSelectedHigh,
+         danceabilitySelectedLow, danceabilitySelectedHigh, moodSelected, instrumentalSelected, keySelected
+        ) => {
+            const { bpm, texture, danceability, mood, instrumental, key, name } = sphereProperties;
 
             // Add your desired logic here based on the slider values and sphere properties
-            if (bpm < bpmSelected
-              /*  && texture === textureSelected
-                && danceability < danceabilitySelected
-                && mood === moodSelected*/
+            if (
+                bpmSelectedLow <= bpm && bpm <= bpmSelectedHigh &&
+                textureSelectedLow <= texture && texture <= textureSelectedHigh &&
+                danceabilitySelectedLow <= danceability && danceability <= danceabilitySelectedHigh &&
+                (mood === moodSelected || moodSelected === 'all moods')
+                // &&                 (instrumental === instrumentalSelected || instrumentalSelected === 'all instrs')
+                // &&                 (key === keySelected)
             ) {
                 return true;
             } else {
-                return false;
+                return false
             }
         },
         []
     );
 
-    const easyVisibility = calculateVisibility
+
+/*    const calculateVisibility = useCallback(
+        (sphereProperties, bpmSelectedLow, bpmSelectedHigh, moodSelected) => {
+            const { bpm, texture, danceability, mood } = sphereProperties;
+
+            // Add your desired logic here based on the slider values and sphere properties
+            if (moodSelected === 'purple') {
+                console.log(moodSelected);
+                return true;
+            } else {
+                console.log(moodSelected);
+                return false;
+            }
+        },
+        [bpmSelectedLow, bpmSelectedHigh, moodSelected]
+    );
+
+    console.log(moodSelected)*/
 
 
 
-    // USE EFFECT
+
+
+
+
+
+
+    const visibility = useMemo(() => {
+        return sphereData.map((sphereProperties) => {
+            return calculateVisibility(
+                sphereProperties,
+                bpmSelectedLow,
+                bpmSelectedHigh,
+                textureSelectedLow,
+                textureSelectedHigh,
+                danceabilitySelectedLow,
+                danceabilitySelectedHigh,
+                moodSelected,
+                keySelected,
+                instrumentSelected
+            );
+        });
+    }, [sphereData, bpmSelectedLow, bpmSelectedHigh, textureSelectedLow, textureSelectedHigh, danceabilitySelectedLow, danceabilitySelectedHigh,
+        moodSelected, instrumentSelected, keySelected]);
+
+
+    // OVERLAPPING
+    const isOverlapping = (i) => {
+        const [positionX1, positionY1, positionZ1] = calculatePosition(i);
+
+        for (let j = 0; j < numSpheres; j++) {
+            if (i !== j) {
+                const [positionX2, positionY2, positionZ2] = calculatePosition(j);
+                const distance = Math.sqrt(
+                    Math.pow(positionX2 - positionX1, 2) +
+                    Math.pow(positionY2 - positionY1, 2) +
+                    Math.pow(positionZ2 - positionZ1, 2)
+                );
+
+                if (distance < sphereSize) {
+                    return true; // Spheres are overlapping
+                }
+            }
+        }
+
+        return false; // Spheres are not overlapping
+    };
+
+    // useEffect for checking overlapping spheres
+    useEffect(() => {
+        // Check for overlapping spheres
+        const checkOverlap = () => {
+            for (let i = 0; i < numSpheres; i++) {
+                if (isOverlapping(i)) {
+                    // console.log(`Sphere ${i} is overlapping`);
+                    decreaseSize()
+                }
+               /* else
+                    console.log(`no overlapping`)*/
+            }
+        };
+
+        checkOverlap()
+    }, [numSpheres, selectedOptionX, selectedOptionY, selectedOptionZ]);
+
+
+// MAIN USE EFFECT
     useEffect(() => {
         for (let i = 0; i < numSpheres; i++) {
-
-            const [positionX, positionY, positionZ] = calculatePosition(i)
-            const sphereProperties = sphereData[i]
-            const visibility = calculateVisibility(sphereProperties, bpmSelected, textureSelected, danceabilitySelected, moodSelected)
-            const scale_for_visibility = visibility ? 1 : 0
+            const [positionX, positionY, positionZ] = calculatePosition(i);
+            const sphereVisibility = visibility[i];
+            const scale_for_visibility = sphereVisibility ? 1 : 0;
 
             const matrix = new THREE.Matrix4();
 
@@ -159,20 +246,23 @@ function SpheresStart() {
                 new THREE.Vector3(positionX, positionY, positionZ),
                 new THREE.Quaternion(),
                 new THREE.Vector3(scale_for_visibility, scale_for_visibility, scale_for_visibility)
-            )
+            );
 
             sphereGroupRef.current.setMatrixAt(i, matrix);
             sphereGroupRef.current.setColorAt(i, colors[i]);
-            // console.log(`Sphere ${i}: Visibility: ${visibility}, BPM: ${bpm_sphere}, Mood: ${mood_sphere}, Danceability: ${danceability_sphere}, Texture: ${texture_sphere}`);
-
         }
 
-        sphereGroupRef.current.instanceMatrix.needsUpdate = true
-        sphereGroupRef.current.instanceColor.needsUpdate = true
+        sphereGroupRef.current.instanceMatrix.needsUpdate = true;
+        sphereGroupRef.current.instanceColor.needsUpdate = true;
 
-        console.log("re-rendering of main useEffect")
+        // console.log("Re-rendering of main useEffect");
+    }, [numSpheres, selectedOptionX, selectedOptionY, selectedOptionZ, visibility, sphereData]);
 
-    }, [numSpheres, bpmSelected, textureSelected, danceabilitySelected, moodSelected, sphereData])
+
+    // NAME OF THE SPHERES
+    const getNameToShow = (sphere, showSelected) => {
+        return showSelected ? "real name" : sphere.name;
+    };
 
 
     const getLabelContent = useCallback(
@@ -186,6 +276,10 @@ function SpheresStart() {
                     return `Texture: ${sphereData[i].texture}`;
                 case 'Danceability':
                     return `Danceability: ${sphereData[i].danceability}`;
+                case 'Instrumental':
+                    return `Instr: ${sphereData[i].instrumental}`;
+                case 'Key':
+                    return `Key: ${sphereData[i].key}`;
                 default:
                     return '';
             }
@@ -215,7 +309,7 @@ function SpheresStart() {
             return (
 
                 // calculateVisibility(i, moodSelected, textureSelected, danceabilitySelected)
-                true
+                visibility[i]
                 && (
                     <group key={i}>
                         <Html
@@ -226,11 +320,14 @@ function SpheresStart() {
                             occlude={[sphereGroupRef, ...labelRef.current]}
                             ref={(ref) => (labelRef.current[i] = ref)}
                         >
-                            {/*Sphere {i}*/}
-                            Sphere {Math.random() * 10}
+{/*
+                            Sphere {i} {textSelected}
+*/}
+                            {getNameToShow(sphereData[i], showSelected)}
+
                         </Html>
 
-                        <Html
+                        {temp && ( <Html
                             position={featureLabels}
                             wrapperClass="features"
                             center
@@ -241,7 +338,8 @@ function SpheresStart() {
                             {`${getLabelContent(selectedOptionX, i)}`} <br />
                             {`${getLabelContent(selectedOptionY, i)}`} <br />
                             {`${getLabelContent(selectedOptionZ, i)}`} <br />
-                        </Html>
+                        </Html>)}
+
                     </group>
                 )
             );
@@ -264,7 +362,7 @@ function SpheresStart() {
 
 
             <instancedMesh
-                // onClick={ leftClick }
+                onClick={ longLeftClick }
                 ref={sphereGroupRef}
                 args={[null, null, numSpheres]}
                 geometry={sphereGeometry}

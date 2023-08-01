@@ -15,8 +15,7 @@ export default function LightsAndShadows() {
 
     // useHelper(dirLight, DirectionalLightHelper)
 
-
-    let { numSpheres, incrementNumSpheres } = useNumSpheres();
+    const { numSpheres, incrementNumSpheres } = useNumSpheres();
 
     const jump = () => {
         incrementNumSpheres();
