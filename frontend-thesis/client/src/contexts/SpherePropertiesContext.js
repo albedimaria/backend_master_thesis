@@ -1,4 +1,4 @@
-import React, {createContext, useCallback, useMemo, useRef} from 'react';
+import React, {createContext, useCallback, useMemo, useRef, useState} from 'react';
 import { useNumSpheres } from "./NumSpheresContext";
 import {useLabels} from "./LabelsContext";
 
@@ -7,6 +7,7 @@ const SpherePropertiesContext = createContext();
 export function SpherePropertiesProvider({ children }) {
 
     const { MoodChoicesLabels, InstrumentChoicesLabels, KeyChoicesLabels } = useLabels();
+    const numSpheres = useNumSpheres()
 
     // SLIDERS TYPE
 
@@ -98,6 +99,12 @@ export function SpherePropertiesProvider({ children }) {
 
 
 
+
+
+
+
+
+
     // Render the children with the sphereData as a prop
     return (
         <SpherePropertiesContext.Provider
@@ -109,7 +116,8 @@ export function SpherePropertiesProvider({ children }) {
                 getInstrument,
                 getKey,
                 getIndex,
-                getName
+                getName,
+                getSelection
             }}
         >
             {children}

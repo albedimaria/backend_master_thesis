@@ -3,17 +3,16 @@ import { Debug, InstancedRigidBodies, Physics, RapierRigidBody, RigidBody} from 
 import {useCallback, useEffect, useMemo, useRef, useState} from "react";
 import React from "react";
 import { Html } from "@react-three/drei";
-import { button, folder, useControls} from "leva";
 import { useNumSpheres } from "../contexts/NumSpheresContext";
 import { useOptions } from "../contexts/OptionsContext";
 import { useSliders } from "../contexts/SlidersContext";
-import {useLabels} from "../contexts/LabelsContext";
 import { useSpheresProperties } from "../contexts/SpherePropertiesContext";
-import io from 'socket.io-client';
+import Dashboard from "./Dashboard";
+import dashboard from "./Dashboard";
 
 
 function SpheresStart() {
-
+    dashboard()
 
 
     const {
@@ -33,20 +32,26 @@ function SpheresStart() {
 
     const sphereGeometry = useMemo(() => new THREE.SphereGeometry(sphereSize, sphereSegments, sphereSegments), [sphereSize, sphereSegments]);
 
-    // SPHERES CONTROLS
-
-
 
     // POSITION
-    const {        selectedOptionX, selectedOptionY, selectedOptionZ} = useOptions()
+    const {selectedOptionX, selectedOptionY, selectedOptionZ} = useOptions()
 
 
     // ARRAYS OF PROPS
-    const { getBpm, getTexture, getDanceability, getMood, getInstrument, getKey, getIndex, getName } = useSpheresProperties()
+    const {
+        getBpm,
+        getTexture,
+        getDanceability,
+        getMood,
+        getInstrument,
+        getKey,
+        getIndex,
+        getName
+    } = useSpheresProperties()
 
     const sphereData = useMemo(
         () =>
-            Array.from({ length: numSpheres }, (_, i) => ({
+            Array.from({length: numSpheres}, (_, i) => ({
                 bpm: getBpm(i),
                 danceability: getDanceability(i),
                 mood: getMood(i),
@@ -54,13 +59,19 @@ function SpheresStart() {
                 instrument: getInstrument(i),
                 key: getKey(i),
                 index: getIndex(i),
-                name: getName(i, getIndex, getInstrument, getKey)
+                name: getName(i, getIndex, getInstrument, getKey),
+                // selected: getSelection(i, isSelected)
             })),
 
         [numSpheres, getBpm, getDanceability, getMood, getTexture, getInstrument, getKey, getIndex, getName]
     );
 
-    //console.log(sphereData)
+
+    const [selectedItemIndex, setSelectedItemIndex] = useState(null);
+
+    const handleClick = (index) => {
+        setSelectedItemIndex(index);
+    };
 
 
     // COLORS
@@ -84,7 +95,6 @@ function SpheresStart() {
                 Mood: (i) => colors[i].r * 10 + 2,
                 Key: (i) => i / 2,
                 Instrument: (i) => i / 4,
-                // Name: (i) => (sphereData[i].name)
             };
 
             const positionX = optionCalculations[selectedOptionX]?.(i) || 0;
@@ -93,9 +103,7 @@ function SpheresStart() {
             return [positionX, positionY, positionZ];
         },
         [selectedOptionX, selectedOptionY, selectedOptionZ, sphereData, colors]
-
     );
-
 
 
     const [temp, setTemp] = useState(false);
@@ -103,7 +111,6 @@ function SpheresStart() {
         console.log('long left click occurred')
         setTemp((prevTemp) => (!prevTemp))
     }
-
 
 
     // FILTERS
@@ -122,23 +129,11 @@ function SpheresStart() {
     } = useSliders()
 
 
-
-
-    // VISIBILITY
     const calculateVisibility = useCallback(
         (sphereProperties, bpmSelectedLow, bpmSelectedHigh, textureSelectedLow, textureSelectedHigh,
          danceabilitySelectedLow, danceabilitySelectedHigh, moodSelected, keySelected, instrumentSelected, textSelected
         ) => {
-            const { bpm, texture, danceability, mood, instrument, key, name } = sphereProperties;
-            // console.log('name:', name[0] + name[2] + name[4])
-            // console.log('sphereProperties:', sphereProperties);
-            /*console.log('bpmSelected:', bpmSelectedLow, bpmSelectedHigh);
-            console.log('textureSelected:', textureSelectedLow, textureSelectedHigh);
-            console.log('danceabilitySelected:', danceabilitySelectedLow, danceabilitySelectedHigh);
-            console.log('moodSelected:', moodSelected);
-            console.log('instrumentSelected:', instrumentSelected);
-            console.log('keySelected:', keySelected);*/
-            console.log('text:', textSelected)
+            const {bpm, texture, danceability, mood, instrument, key, name} = sphereProperties;
 
 
             if (textSelected) {
@@ -171,7 +166,6 @@ function SpheresStart() {
         },
         [textSelected] // Make sure to include textSelected in the dependency array
     );
-
 
 
     // FOR EACH SPHERE
@@ -229,8 +223,8 @@ function SpheresStart() {
                     // console.log(`Sphere ${i} is overlapping`);
                     decreaseSize()
                 }
-               /* else
-                    console.log(`no overlapping`)*/
+                /* else
+                     console.log(`no overlapping`)*/
             }
         };
 
@@ -245,6 +239,7 @@ function SpheresStart() {
             const [positionX, positionY, positionZ] = calculatePosition(i);
             const sphereVisibility = visibility[i];
             const scale_for_visibility = sphereVisibility ? 1 : 0;
+            const isClicked = getSelection(i)
 
             const matrix = new THREE.Matrix4();
 
@@ -295,7 +290,7 @@ function SpheresStart() {
 
     // HTML
     const labelsHtml = visible
-        ? Array.from({ length: numSpheres }, (_, i) => {
+        ? Array.from({length: numSpheres}, (_, i) => {
 
             const positionOpt = calculatePosition(i)
 
@@ -309,7 +304,6 @@ function SpheresStart() {
                 positionOpt[1] - sphereSize * 0.8 - 0.6,
                 positionOpt[2] + sphereSize * 1.4 + 0.3
             ]
-
 
 
             return (
@@ -326,14 +320,12 @@ function SpheresStart() {
                             occlude={[sphereGroupRef, ...labelRef.current]}
                             ref={(ref) => (labelRef.current[i] = ref)}
                         >
-{/*
-                            Sphere {i} {textSelected}
-*/}
+
                             {getNameToShow(sphereData[i], showSelected)}
 
                         </Html>
 
-                        {temp && ( <Html
+                        {temp && (<Html
                             position={featureLabels}
                             wrapperClass="features"
                             center
@@ -341,9 +333,9 @@ function SpheresStart() {
                             occlude={[sphereGroupRef, ...labelRef.current]}
                             // onClick={() => handleLeftClick(i)}
                         >
-                            {`${getLabelContent(selectedOptionX, i)}`} <br />
-                            {`${getLabelContent(selectedOptionY, i)}`} <br />
-                            {`${getLabelContent(selectedOptionZ, i)}`} <br />
+                            {`${getLabelContent(selectedOptionX, i)}`} <br/>
+                            {`${getLabelContent(selectedOptionY, i)}`} <br/>
+                            {`${getLabelContent(selectedOptionZ, i)}`} <br/>
                         </Html>)}
 
                     </group>
@@ -351,37 +343,56 @@ function SpheresStart() {
             );
 
 
-
-
-
-
         })
         : null;
 
-
-
-
+/* OLD RETURN
 
     return <>
 
-        <group visible={visible}>
+    <group visible={visible}>
 
 
-            <instancedMesh
-                onClick={ longLeftClick }
-                ref={sphereGroupRef}
-                args={[null, null, numSpheres]}
-                geometry={sphereGeometry}
-                // material={ sphereMaterial }
-            >
-                <meshStandardMaterial />
-                {labelsHtml}
+        <instancedMesh
+    onClick={() => longLeftClick }
+    ref={ sphereGroupRef }
+    args={[null, null, numSpheres]}
+    geometry={sphereGeometry}
+        // material={ sphereMaterial }
+        >
+        <meshStandardMaterial />
+        {labelsHtml}
 
-            </instancedMesh>
-        </group>
+</instancedMesh>
 
-    </>
 
+</group>
+
+</>
+
+}*/
+
+
+    return (
+        <>
+            <group visible={visible}>
+                {sphereData.map((sphereProperties, index) => (
+                    <instancedMesh
+                        key={index} // Add a unique key
+                        onClick={() => longLeftClick(index)} // Pass the index to the handler
+                        // ref={(ref) => (sphereGroupRef.current[index] = ref)} // Use a unique ref for each instance
+                        ref =  { sphereGroupRef }
+                        args={[null, null, numSpheres]}
+                        geometry={sphereGeometry}
+                        // material={sphereMaterial}
+                    >
+                        <meshStandardMaterial/>
+                        {labelsHtml}
+                    </instancedMesh>
+                ))}
+            </group>
+        </>
+    );
 }
 
 export default function Spheres() {

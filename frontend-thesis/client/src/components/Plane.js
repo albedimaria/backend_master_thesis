@@ -27,7 +27,7 @@ function PlaneStart() {
 
     const { numSpheres } = useNumSpheres()
 
-    const scalingFactor = { x: 50, y: heightPlane / 2, z: 35 };
+    const scalingFactor = { x: 45, y: heightPlane / 2, z: 25 };
 
     const leftClick = (event) =>
     {

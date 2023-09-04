@@ -13,7 +13,7 @@ import Popup from "./components/Popup";
 import {SlidersProvider} from "./contexts/SlidersContext";
 import {SpherePropertiesProvider} from "./contexts/SpherePropertiesContext";
 import {ScaleLoader} from "react-spinners";
-
+import Dashboard from "./components/Dashboard";
 
 export default function Experience() {
     const [isLoading, setIsLoading] = useState(true);
@@ -37,6 +37,7 @@ export default function Experience() {
                                     <SlidersProvider>
                                         <OptionsProvider>
                                             <SpherePropertiesProvider>
+                                                <Dashboard />
                                                 <WelcomeText />
                                                 <Popup />
                                                 <Spheres />

@@ -6,6 +6,8 @@ import Experience from "./Experience";
 import * as THREE from "three";
 import {KeyboardControls, Loader} from '@react-three/drei'
 import {loaderStyles} from "./styles/LoaderStyles";
+import Button from "./components/Button";
+
 
 const root = ReactDOM.createRoot(document.getElementById('root'));
 
@@ -44,14 +46,14 @@ root.render(
                         <Experience />
                     </Suspense>
                 </Canvas>
-           {/*     <Loader
-                    containerStyles={loaderStyles.container}
+                <Loader
+      /*              containerStyles={loaderStyles.container}
                     innerStyles={loaderStyles.inner}
                     barStyles={loaderStyles.bar}
                     dataStyles={loaderStyles.data}
                     dataInterpolation={(p) => `Loading ${p.toFixed(2)}%`}
-                    initialState={(active) => active}
-                />*/}
+                    initialState={(active) => active}*/
+                />
             </KeyboardControls>
         </StrictMode>
     </>

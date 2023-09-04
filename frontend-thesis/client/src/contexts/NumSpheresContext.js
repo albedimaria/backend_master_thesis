@@ -7,7 +7,7 @@ const NumSpheresContext = createContext();
 // Create a provider component
 export function NumSpheresProvider({ children }) {
 
-    const [numSpheres, setNumSpheres] = useState(50);
+    const [numSpheres, setNumSpheres] = useState(20);
     const [sphereSegments, setSphereSegments] = useState(8);
     const [sphereSize, setSphereSize] = useState(0.3)
     // const [sizeDisabled, setSizeDisabled] = useState(false)
