@@ -1,7 +1,7 @@
 import React from 'react';
 import { Html } from '@react-three/drei'
-import '../styles/modal.css'; // Import the CSS file here
-import '../styles/style.css'
+import '../../styles/modal.css'; // Import the CSS file here
+import '../../styles/style.css'
 
 
 const Modal = ({ handleClose, show, children }) => {

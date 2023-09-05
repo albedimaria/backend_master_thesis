@@ -20,8 +20,9 @@ export const LabelsProvider = ({ children }) => {
 
 
 
+
     return (
-        <LabelsContext.Provider value={labels}>
+        <LabelsContext.Provider value={ labels }>
             {children}
         </LabelsContext.Provider>
     );

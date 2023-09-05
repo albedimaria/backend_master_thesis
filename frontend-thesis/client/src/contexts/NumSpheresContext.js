@@ -7,11 +7,11 @@ const NumSpheresContext = createContext();
 // Create a provider component
 export function NumSpheresProvider({ children }) {
 
-    const [numSpheres, setNumSpheres] = useState(20);
-    const [sphereSegments, setSphereSegments] = useState(8);
+    const [numSpheres, setNumSpheres] = useState(200);
+    const [sphereSegments, setSphereSegments] = useState(4);
     const [sphereSize, setSphereSize] = useState(0.3)
-    // const [sizeDisabled, setSizeDisabled] = useState(false)
 
+    // RESOLUTION INCREMENT / DECREMENT
     const increaseResolution = () => {
         setSphereSegments((prevSphereSegments) => prevSphereSegments * 2);
     }
@@ -20,6 +20,7 @@ export function NumSpheresProvider({ children }) {
         setSphereSegments((prevSphereSegments) => prevSphereSegments / 2);
     }
 
+    // SIZE INCREMENT / DECREMENT
     const increaseSize = () => {
         setSphereSize((prevSphereSize) => prevSphereSize * 2);
     }
@@ -28,8 +29,7 @@ export function NumSpheresProvider({ children }) {
         setSphereSize((prevSphereSize) => Math.max(prevSphereSize / 2, 0.1));
     }
 
-
-
+    // # INCREMENT / DECREMENT
     const incrementNumSpheres = () => {
         setNumSpheres((prevNumSpheres) => prevNumSpheres + 1)
     };
@@ -38,7 +38,7 @@ export function NumSpheresProvider({ children }) {
         setNumSpheres((prevNumSpheres) => (prevNumSpheres === 1 ? 1 : prevNumSpheres - 1));
     };
 
-
+    // GUI LEVA CONTROLS
     const [, set] = useControls(
         'spheres', () => ({
 
@@ -72,10 +72,6 @@ export function NumSpheresProvider({ children }) {
                 'remove sphere': button(() => {
                     decrementNumSpheres();
                 }),
-          /*      customThings: {
-                    options: ["sphere", "plane"],
-                    visible: buttonVisibility
-                },*/
 
                 'slow CPU? Press here': button(() => {
                     setSphereSegments(4)

@@ -6,7 +6,7 @@ import Experience from "./Experience";
 import * as THREE from "three";
 import {KeyboardControls, Loader} from '@react-three/drei'
 import {loaderStyles} from "./styles/LoaderStyles";
-import Button from "./components/Button";
+import Button from "./components/inProgress/Button";
 
 
 const root = ReactDOM.createRoot(document.getElementById('root'));

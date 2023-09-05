@@ -1,7 +1,7 @@
 import React, { useState } from "react";
 import { Html } from "@react-three/drei";
 import Modal from "./Modal.js";
-import '../styles/modal.css'; // Import the CSS file here
+import '../../styles/modal.css'; // Import the CSS file here
 
 const Dashboard = () => {
     const [showModal, setShowModal] = useState(false);

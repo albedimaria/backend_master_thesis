@@ -1,11 +1,12 @@
 import * as THREE from 'three'
 import {Html, MeshReflectorMaterial, useHelper, useKeyboardControls} from '@react-three/drei'
-import '../styles/style.css'
+import '../../styles/style.css'
 import {Debug, InstancedRigidBodies, Physics, RigidBody} from "@react-three/rapier";
 import {useEffect, useRef, useState} from "react";
-import {useLabels} from "../contexts/LabelsContext";
-import {useOptions, useOptionsX} from "../contexts/OptionsContext";
-import {useNumSpheres} from "../contexts/NumSpheresContext";
+import {useLabels} from "../../contexts/LabelsContext";
+import {useOptions, useOptionsX} from "../../contexts/OptionsContext";
+import {useNumSpheres} from "../../contexts/NumSpheresContext";
+
 
 THREE.ColorManagement.legacyMode = false
 
@@ -29,6 +30,9 @@ function PlaneStart() {
 
     const scalingFactor = { x: 45, y: heightPlane / 2, z: 25 };
 
+    /*
+    PRACTICE
+
     const leftClick = (event) =>
     {
         console.log('left click occurred')
@@ -51,7 +55,7 @@ function PlaneStart() {
     }
 
     const onClick = (event) => {
-    }
+    }*/
 
 
 
@@ -82,47 +86,26 @@ function PlaneStart() {
 
     return (
         <>
-{/*            <Physics gravity={[0, -5, 0]}>
-                <RigidBody type={"fixed"}>*/}
-                    <group>
-                        <mesh
-                            // onClick={ leftClick }
-                            // onContextMenu={ longLeftClick }
+            <group>
+                <mesh
+                    // onClick={ leftClick }
+                    // onContextMenu={ longLeftClick }
 
-                            // onDoubleClick={ doubleLeftClick }
+                    // onDoubleClick={ doubleLeftClick }
 
-                            // HIGH CPU PERFORMANCE
-                            // onPointerEnter={ () => {document.body.style.cursor = 'pointer'} }
-                            // onPointerLeave={ () => {document.body.style.cursor = 'default'} }
+                    // HIGH CPU PERFORMANCE
+                    // onPointerEnter={ () => {document.body.style.cursor = 'pointer'} }
+                    // onPointerLeave={ () => {document.body.style.cursor = 'default'} }
 
 
-                            ref={planeRef}
-                            geometry={boxGeometry}
-                            material={boxMaterial}
-                            scale={[scalingFactor.x, scalingFactor.y, scalingFactor.z]}
-                            // receiveShadow
-                            position={[scalingFactor.x / 2, -heightPlane / 4, 0]}
-                        />
-                    </group>
-              {/*  </RigidBody>*/}
-
-                 {/*   <InstancedRigidBodies
-                    >
-                        <instancedMesh
-                            position={[Math.random() * 10 + 10, 15, 0]}
-                            args={[null, null, 3]}
-                        >
-                            <sphereGeometry />
-                            <meshStandardMaterial color={'#ffffff'} />
-                        </instancedMesh>
-                    </InstancedRigidBodies>*/}
-
-
-{/*
-            </Physics>
-*/}
-
-
+                    ref={ planeRef }
+                    geometry={ boxGeometry }
+                    material={ boxMaterial }
+                    scale={[scalingFactor.x, scalingFactor.y, scalingFactor.z]}
+                    // receiveShadow
+                    position={[scalingFactor.x / 2, -heightPlane / 4, 0]}
+                />
+            </group>
 
             <axesHelper scale={[scalingFactor.x, scalingFactor.x / 3, scalingFactor.z]} position={[0, 0, -scalingFactor.z / 2]} />
 

@@ -1,19 +1,19 @@
 import {OrbitControls} from "@react-three/drei";
 import React, { useState, useEffect } from "react";
 import LightsAndShadows from "./components/LightsAndShadows";
-import Plane from "./components/Plane.js";
+import Plane from "./components/plane/Plane.js";
 import { Physics, Debug} from "@react-three/rapier";
-import Spheres from "./components/Spheres";
+import Spheres from "./components/spheres/Spheres";
 import {NumSpheresProvider} from "./contexts/NumSpheresContext";
 import {Perf} from "r3f-perf";
 import {LabelsProvider} from "./contexts/LabelsContext";
 import {OptionsProvider} from "./contexts/OptionsContext";
-import WelcomeText from "./components/WelcomeText";
+import WelcomeText from "./components/inProgress/WelcomeText";
 import Popup from "./components/Popup";
 import {SlidersProvider} from "./contexts/SlidersContext";
 import {SpherePropertiesProvider} from "./contexts/SpherePropertiesContext";
 import {ScaleLoader} from "react-spinners";
-import Dashboard from "./components/Dashboard";
+import Dashboard from "./components/inProgress/Dashboard";
 
 export default function Experience() {
     const [isLoading, setIsLoading] = useState(true);
