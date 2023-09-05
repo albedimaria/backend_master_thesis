@@ -2,14 +2,17 @@
 ## Reimagine Music Interaction and Visualization in Real-time with React
 
 EssentialSounds is a project that aims to change the way we visualize music samples. This repository houses the groundbreaking codebase that combines 
-the power of Python's backend with React's frontend to bring you unparalleled 3D music sample visualization and an innovative filtering system.
+the power of Python's backend with React-3-Fiber's frontend to bring you unparalleled 3D music sample visualization and an innovative filtering system.
 The main features of this project are the following:
 
 * complete feature extraction using Essentia library
+* new 3D way of visualizing music samples with R3F
+* new way to organize the dataset: each axis displays a feature chosen by the user
 * new way of real-time filtering based on extracted features
-* new 3D way of visualizing music samples: each axis displays a feature chosen by the user
 * large set of available features for a unique and customised experience 
-* possibility to handle up to 50 samples simultaneously without losing performance
+* possibility to handle up to 50* samples simultaneously without losing performance (*now 300)
+* responsive (to be tested for optimized UX)
+* easy, intuitive and guided UX
 
 ## how the project appears
 
@@ -22,6 +25,21 @@ The main features of this project are the following:
 ### more in detail
 <img width="184" alt="filters in detail" src="https://github.com/albedimaria/frontend-thesis/assets/74492752/a3db896b-9201-4fc2-a72a-04f85664cbf1">
 
+## filter section
+* features involved
+  - BPM
+  - Danceability
+  - Mood
+  - Texture (work in progress)
+  - Instrument
+  - Key
+* the choice to not provide the genre as an available feature aims to focus on the other meta descriptors.
+* the set of features will be enlarged
+* BPM, danceability and layers of texture can be selected through a double slider, which sets the range
+* instrument, key and mood can be selected using an intuitive dropbox
+* possibility to filter by name of the samples
+* the user can choose the name of the samples between the real sample name or a feature name (such as "sad - piano - 90BPM")
+* filtering will be done in real time; it will re-render the spheres due to the code logic, but it will be a black-box approach for the user
 
 ## working in progress 
 * connection back / front ends through socket.io-client
