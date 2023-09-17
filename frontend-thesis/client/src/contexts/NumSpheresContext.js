@@ -1,5 +1,6 @@
 import React, { createContext, useState } from 'react'
 import {button, folder, useControls} from "leva";
+import {useData} from "./DataContext";
 
 // Create the context
 const NumSpheresContext = createContext();
@@ -7,7 +8,9 @@ const NumSpheresContext = createContext();
 // Create a provider component
 export function NumSpheresProvider({ children }) {
 
-    const [numSpheres, setNumSpheres] = useState(200);
+    const data = useData()
+    // console.log(data.length)
+    const [numSpheres, setNumSpheres] = useState(20);
     const [sphereSegments, setSphereSegments] = useState(4);
     const [sphereSize, setSphereSize] = useState(0.3)
 
@@ -49,8 +52,6 @@ export function NumSpheresProvider({ children }) {
                     if (sphereSize === 0.3) {
                     }
                 }, { disabled: false }),
-
-                // foo: button((get) => alert(`Number value is ${get('number')}`), { disabled: true }),
 
                 'increase size': button(() => {
                     increaseSize();

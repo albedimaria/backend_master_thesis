@@ -1,8 +1,7 @@
 import * as THREE from 'three'
 import {Html, MeshReflectorMaterial, useHelper, useKeyboardControls} from '@react-three/drei'
 import '../../styles/style.css'
-import {Debug, InstancedRigidBodies, Physics, RigidBody} from "@react-three/rapier";
-import {useEffect, useRef, useState} from "react";
+import { useRef } from "react";
 import {useLabels} from "../../contexts/LabelsContext";
 import {useOptions, useOptionsX} from "../../contexts/OptionsContext";
 import {useNumSpheres} from "../../contexts/NumSpheresContext";
@@ -26,7 +25,7 @@ function PlaneStart() {
         Instrument_label, Mood_label, Danceability_label
     } = useLabels()
 
-    const { numSpheres } = useNumSpheres()
+    // const { numSpheres } = useNumSpheres()
 
     const scalingFactor = { x: 45, y: heightPlane / 2, z: 25 };
 

@@ -1,4 +1,4 @@
-import {OrbitControls} from "@react-three/drei";
+import {Box, OrbitControls} from "@react-three/drei";
 import React, { useState, useEffect } from "react";
 import LightsAndShadows from "./components/LightsAndShadows";
 import Plane from "./components/plane/Plane.js";
@@ -14,16 +14,18 @@ import {SlidersProvider} from "./contexts/SlidersContext";
 import {SpherePropertiesProvider} from "./contexts/SpherePropertiesContext";
 import {ScaleLoader} from "react-spinners";
 import Dashboard from "./components/inProgress/Dashboard";
+import InfoSphere from "./components/InfoSphere";
+import { DataProvider } from "./contexts/DataContext";
 
 export default function Experience() {
     const [isLoading, setIsLoading] = useState(true);
 
-    useEffect(() => {
+/*    useEffect(() => {
         // Simulate loading delay
         setTimeout(() => {
             setIsLoading(false);
         }, 2000); // 3 seconds
-    }, []);
+    }, []);*/
 
     return (
         <>
@@ -31,24 +33,27 @@ export default function Experience() {
                     <Perf position={"top-left"} />
                     <Physics>
                         <Debug />
-                        <NumSpheresProvider>
-                            <>
-                                <LabelsProvider>
-                                    <SlidersProvider>
-                                        <OptionsProvider>
-                                            <SpherePropertiesProvider>
-                                                <Dashboard />
-                                                <WelcomeText />
-                                                <Popup />
-                                                <Spheres />
-                                                <Plane />
-                                                <LightsAndShadows />
-                                            </SpherePropertiesProvider>
-                                        </OptionsProvider>
-                                    </SlidersProvider>
-                                </LabelsProvider>
-                            </>
-                        </NumSpheresProvider>
+                        <DataProvider>
+                            <NumSpheresProvider>
+                                <>
+                                    <LabelsProvider>
+                                        <SlidersProvider>
+                                            <OptionsProvider>
+                                                <SpherePropertiesProvider>
+                                                    <Dashboard />
+{/*                                                    <InfoSphere />*/}
+                                                    <Popup />
+                                                    <Spheres />
+                                                    <Plane />
+                                                    <LightsAndShadows />
+                                                </SpherePropertiesProvider>
+                                            </OptionsProvider>
+                                        </SlidersProvider>
+                                    </LabelsProvider>
+                                </>
+                            </NumSpheresProvider>
+                        </DataProvider>
+
                     </Physics>
                 </>
     );

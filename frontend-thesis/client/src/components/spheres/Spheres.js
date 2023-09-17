@@ -122,7 +122,7 @@ function SpheresStart() {
                 }
             }
         },
-        [textSelected] // Make sure to include textSelected in the dependency array
+        [] // Make sure to include textSelected in the dependency array
     );
 
 
@@ -148,11 +148,11 @@ function SpheresStart() {
 
 
     // MOUSE EVENTS
-    const [selectedItemIndex, setSelectedItemIndex] = useState(null);
+    /*const [selectedItemIndex, setSelectedItemIndex] = useState(null);
 
     const handleClick = (index) => {
         setSelectedItemIndex(index);
-    };
+    };*/
 
     const [temp, setTemp] = useState(false);
     const longLeftClick = (event) => {
@@ -172,7 +172,7 @@ function SpheresStart() {
             const [positionX, positionY, positionZ] = calculatePosition(instanceId);
             const sphereVisibility = visibility[instanceId];
             const scale_for_visibility = sphereVisibility ? 1 : 0;
-            const isClicked = getSelection(instanceId)
+            // const isClicked = getSelection(instanceId)
 
             const matrix = new THREE.Matrix4();
 
