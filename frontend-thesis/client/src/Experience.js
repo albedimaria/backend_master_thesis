@@ -4,23 +4,26 @@ import LightsAndShadows from "./components/LightsAndShadows";
 import Plane from "./components/plane/Plane.js";
 import { Physics, Debug} from "@react-three/rapier";
 import Spheres from "./components/spheres/Spheres";
-import {NumSpheresProvider} from "./contexts/NumSpheresContext";
+import {NumSpheresProvider} from "./contexts/basicSphereProperties/numSpheresContext/NumSpheresContext";
 import {Perf} from "r3f-perf";
 import {LabelsProvider} from "./contexts/LabelsContext";
-import {OptionsProvider} from "./contexts/OptionsContext";
+import {OptionsProvider} from "./contexts/levaControls/axisControls/OptionsContext";
 import WelcomeText from "./components/inProgress/WelcomeText";
 import Popup from "./components/Popup";
-import {SlidersProvider} from "./contexts/SlidersContext";
+import {SlidersProvider} from "./contexts/levaControls/filtersControls/SlidersContext";
 import {SpherePropertiesProvider} from "./contexts/SpherePropertiesContext";
 import {ScaleLoader} from "react-spinners";
 import Dashboard from "./components/inProgress/Dashboard";
 import InfoSphere from "./components/InfoSphere";
 import { DataProvider } from "./contexts/DataContext";
+import {BasicLevaProvider} from "./contexts/levaControls/basicSphereLeva/BasicLevaContext";
 
 export default function Experience() {
+
+/*  DELAY AT THE BEGINNING
     const [isLoading, setIsLoading] = useState(true);
 
-/*    useEffect(() => {
+    useEffect(() => {
         // Simulate loading delay
         setTimeout(() => {
             setIsLoading(false);
@@ -29,32 +32,38 @@ export default function Experience() {
 
     return (
         <>
-                    <OrbitControls enableDamping={true} makeDefault={true} target={[20, 10, 0]} />
-                    <Perf position={"top-left"} />
-                    <Physics>
-                        <Debug />
-                        <DataProvider>
-                            <NumSpheresProvider>
-                                <>
-                                    <LabelsProvider>
-                                        <SlidersProvider>
-                                            <OptionsProvider>
-                                                <SpherePropertiesProvider>
-                                                    <Dashboard />
-{/*                                                    <InfoSphere />*/}
-                                                    <Popup />
-                                                    <Spheres />
-                                                    <Plane />
-                                                    <LightsAndShadows />
-                                                </SpherePropertiesProvider>
-                                            </OptionsProvider>
-                                        </SlidersProvider>
-                                    </LabelsProvider>
-                                </>
-                            </NumSpheresProvider>
-                        </DataProvider>
+            <OrbitControls enableDamping={true} makeDefault={true} target={[20, 10, 0]} />
+            <Perf position={"top-left"} />
+            <Physics>
 
-                    </Physics>
-                </>
+                <Debug />
+                <DataProvider>
+                    <NumSpheresProvider>
+                            <LabelsProvider>
+                                <BasicLevaProvider>
+                                    <SlidersProvider>
+                                        <OptionsProvider>
+                                            <SpherePropertiesProvider>
+                                                {/*
+                                            <Dashboard />
+*/}
+                                                {/*   <InfoSphere />*/}
+                                                {/*
+                                            <Popup />
+*/}
+                                                <Spheres />
+                                                <Plane />
+                                                <LightsAndShadows />
+                                            </SpherePropertiesProvider>
+                                        </OptionsProvider>
+                                    </SlidersProvider>
+                                </BasicLevaProvider>
+
+                            </LabelsProvider>
+                    </NumSpheresProvider>
+                </DataProvider>
+
+            </Physics>
+        </>
     );
 }

@@ -1,16 +1,17 @@
 import * as THREE from 'three';
 import {useCallback, useEffect, useMemo, useRef, useState} from "react";
 import React from "react";
-import { useNumSpheres } from "../../contexts/NumSpheresContext";
-import { useOptions } from "../../contexts/OptionsContext";
-import { useSliders } from "../../contexts/SlidersContext";
+import { useNumSpheres } from "../../contexts/basicSphereProperties/numSpheresContext/NumSpheresContext";
+import { useOptions } from "../../contexts/levaControls/axisControls/OptionsContext";
+import { useSliders } from "../../contexts/levaControls/filtersControls/SlidersContext";
 import { useSpheresProperties } from "../../contexts/SpherePropertiesContext";
-// import dashboard from "./inProgress/Dashboard";
 import { getLabelContent } from "../labels/LabelComponent";
 import SphereLabels from '../labels/SphereLabels';
 import SphereDataGenerator from "./SphereDataGenerator";
 import CalculatePosition from "./CalculatePosition";
 import {clickHandle, rightClickHandle} from "../MouseEvents";
+
+// import dashboard from "./inProgress/Dashboard";
 
 
 
@@ -18,7 +19,7 @@ function SpheresStart() {
 
     // dashboard()
 
-    const {numSpheres, sphereSegments, sphereSize} = useNumSpheres();         // SPHERES BASIC CONTROLS
+    const { numSpheres, sphereSize, setSphereSize, sphereSegments, setSphereSegments } = useNumSpheres();         // SPHERES BASIC CONTROLS
     const {selectedOptionX, selectedOptionY, selectedOptionZ} = useOptions()    // AXIS CHOICE
 
 

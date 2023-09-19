@@ -3,8 +3,8 @@ import {Html, MeshReflectorMaterial, useHelper, useKeyboardControls} from '@reac
 import '../../styles/style.css'
 import { useRef } from "react";
 import {useLabels} from "../../contexts/LabelsContext";
-import {useOptions, useOptionsX} from "../../contexts/OptionsContext";
-import {useNumSpheres} from "../../contexts/NumSpheresContext";
+import {useOptions, useOptionsX} from "../../contexts/levaControls/axisControls/OptionsContext";
+import {useNumSpheres} from "../../contexts/basicSphereProperties/numSpheresContext/NumSpheresContext";
 
 
 THREE.ColorManagement.legacyMode = false

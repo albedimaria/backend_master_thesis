@@ -1,4 +1,3 @@
-// SphereDataGenerator.js
 import { useMemo } from 'react';
 
 function SphereDataGenerator({

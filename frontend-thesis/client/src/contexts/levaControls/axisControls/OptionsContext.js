@@ -1,6 +1,6 @@
 import React, {createContext, useEffect, useState} from 'react';
 import { button, folder, useControls } from 'leva';
-import { useLabels } from './LabelsContext';
+import { useLabels } from '../../LabelsContext';
 
 const OptionsContext = createContext();
 export const OptionsProvider = ({ children }) => {
@@ -47,11 +47,8 @@ export const OptionsProvider = ({ children }) => {
         <OptionsContext.Provider
             value={{
                 selectedOptionX,
-                // setSelectedOptionX,
                 selectedOptionY,
-                // setSelectedOptionY,
                 selectedOptionZ,
-                // setSelectedOptionZ,
             }}
         >
             {children}

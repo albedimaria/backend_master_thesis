@@ -1,5 +1,5 @@
 import React, {createContext, useCallback, useMemo, useRef, useState} from 'react';
-import { useNumSpheres } from "./NumSpheresContext";
+import { useNumSpheres } from "./basicSphereProperties/numSpheresContext/NumSpheresContext";
 import {useLabels} from "./LabelsContext";
 
 const SpherePropertiesContext = createContext();

@@ -1,8 +1,18 @@
 import React, { createContext } from 'react';
+import {useData} from "./DataContext";
+import LabelsDataExtractor from "../components/labels/LabelDataExtractor";
 
 const LabelsContext = createContext();
 
 export const LabelsProvider = ({ children }) => {
+
+    const {data, explanation} = useData()
+
+
+    // Use the LabelsDataExtractor component to extract label data
+    const { moodClassesAvailable, instrumentClassesAvailable, keyClassesAvailable } =
+        LabelsDataExtractor({ explanation });
+
 
     const labels = {
         BPM_label: "BPM",
@@ -12,9 +22,9 @@ export const LabelsProvider = ({ children }) => {
         Key_label: "Key",
         Instrument_label: "Instrument",
 
-        MoodChoicesLabels: ['all moods', 'noMood', 'happy', 'sad', 'purple', 'calm', 'excited'],
-        InstrumentChoicesLabels: ['all instrs', 'drums', 'horn', 'sax', 'piano', 'guitar'],
-        KeyChoicesLabels: ['all keys', 'A', 'B', 'C', 'D', 'E', 'F', 'G'],
+        MoodChoicesLabels: moodClassesAvailable,
+        InstrumentChoicesLabels: instrumentClassesAvailable,
+        KeyChoicesLabels: keyClassesAvailable,
         OptionsLabels: ['BPM', 'Texture', 'Mood', 'Danceability', 'Instrument', 'Key'],
     };
 
