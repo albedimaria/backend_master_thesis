@@ -115,10 +115,6 @@ export const SlidersProvider = ({ children }) => {
         )
     }));
 
-    // console.log("sText:", textSelected)
-
-
-
 
     return (
         <SlidersContext.Provider value={{

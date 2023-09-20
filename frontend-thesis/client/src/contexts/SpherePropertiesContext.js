@@ -81,24 +81,6 @@ export function SpherePropertiesProvider({ children }) {
         };
     }, []);*/
 
-    const getName = useMemo(() => {
-        const getPropertyValue = (getProperty) => {
-            const property = getProperty;
-            return typeof property === 'string' ? property : '';
-        };
-
-        return (i, getIndex, getInstrument, getKey) => {
-            const output1 = getPropertyValue(getIndex(i).toString());
-            const output2 = getPropertyValue(getInstrument(i));
-            const output3 = getPropertyValue(getKey(i));
-            return [output1, ' - ', output2, ' - ', output3];
-        };
-    }, []);
-
-
-
-
-
 
 
 
@@ -116,8 +98,8 @@ export function SpherePropertiesProvider({ children }) {
                 getInstrument,
                 getKey,
                 getIndex,
-                getName,
-                getSelection
+
+
             }}
         >
             {children}

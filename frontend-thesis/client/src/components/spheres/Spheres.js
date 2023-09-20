@@ -9,15 +9,12 @@ import { getLabelContent } from "../labels/LabelComponent";
 import SphereLabels from '../labels/SphereLabels';
 import SphereDataGenerator from "./SphereDataGenerator";
 import CalculatePosition from "./CalculatePosition";
-import {clickHandle, rightClickHandle} from "../inProgress/MouseEvents";
-
-// import dashboard from "./inProgress/Dashboard";
-
-
+import {clickHandle, rightClickHandle} from "../../utils/MouseEvents";
+import { useVisibility } from "../../utils/VisibilityFunction";
+import {Html} from "@react-three/drei";
+import sphereLabels from "../labels/SphereLabels";
 
 function SpheresStart() {
-
-    // dashboard()
 
     const { numSpheres, sphereSize, setSphereSize, sphereSegments, setSphereSegments } = useNumSpheres();         // SPHERES BASIC CONTROLS
     const {selectedOptionX, selectedOptionY, selectedOptionZ} = useOptions()    // AXIS CHOICE
@@ -28,40 +25,11 @@ function SpheresStart() {
     const labelRef = useRef([]);
     const sphereGeometry = useMemo(() => new THREE.SphereGeometry(sphereSize, sphereSegments, sphereSegments), [sphereSize, sphereSegments]);
 
-    // ARRAYS OF FUNCTIONS
-    const {
-        getBpm,
-        getTexture,
-        getDanceability,
-        getMood,
-        getInstrument,
-        getKey,
-        getIndex,
-        getName
-    } = useSpheresProperties()
 
     // ARRAY OF PROPS
-    const sphereData = SphereDataGenerator(
-        {
-            numSpheres,
-            getBpm,
-            getTexture,
-            getDanceability,
-            getMood,
-            getInstrument,
-            getKey,
-            getIndex,
-            getName
-        });
-    // console.log(sphereData)
+    const sphereData = SphereDataGenerator();
 
-    // COLORS
-    const colors = useMemo(() => {
-        return Array.from({length: numSpheres}, (_, instanceId) => {
-            const color = new THREE.Color().setHSL(instanceId / numSpheres, 1, 0.5);
-            return color;
-        });
-    }, [numSpheres]);
+
 
 
     // POSITION OF EACH SPHERE
@@ -69,12 +37,10 @@ function SpheresStart() {
         selectedOptionX,
         selectedOptionY,
         selectedOptionZ,
-        sphereData,
-        colors,
+        sphereData
     });
 
 
-    // FILTERS
     const {
         bpmSelectedLow,
         bpmSelectedHigh,
@@ -86,54 +52,55 @@ function SpheresStart() {
         keySelected,
         instrumentSelected,
         textSelected,
-        showSelected,
+        showSelected
     } = useSliders()
 
-    // VISIBILITY FUNCTION
-    const calculateVisibility = useCallback(
-        (sphereProperties, bpmSelectedLow, bpmSelectedHigh, textureSelectedLow, textureSelectedHigh,
-         danceabilitySelectedLow, danceabilitySelectedHigh, moodSelected, keySelected, instrumentSelected, textSelected
-        ) => {
-            const {bpm, texture, danceability, mood, instrument, key, name} = sphereProperties;
 
+    const visibility = useVisibility();
 
-            if (textSelected) {
-                // If textSelected is not empty, apply filtering based on textSelected
-                if (
-                    name[0].includes(textSelected) ||
-                    name[2].includes(textSelected) ||
-                    name[4].includes(textSelected)
-                ) {
-                    return true; // Sphere matches the name filter
-                } else {
-                    return false; // Sphere does not match the name filter
-                }
+/*    function hashCode(str) { // java String#hashCode
+        let hash = 0;
+        for (let i = 0; i < str.length; i++) {
+            hash = str.charCodeAt(i) + ((hash << 5) - hash);
+        }
+        return hash;
+    }
 
-            } else {
-                // If textSelected is empty, apply other filters
-                if (
-                    bpmSelectedLow <= bpm && bpm <= bpmSelectedHigh &&
-                    textureSelectedLow <= texture && texture <= textureSelectedHigh &&
-                    danceabilitySelectedLow <= danceability && danceability <= danceabilitySelectedHigh &&
-                    (mood === moodSelected || moodSelected === 'all moods') &&
-                    (instrument === instrumentSelected || instrumentSelected === 'all instrs') &&
-                    (key === keySelected || keySelected === 'all keys')
-                ) {
-                    return true; // Sphere matches other filters
-                } else {
-                    return false; // Sphere does not match other filters
-                }
-            }
-        },
-        [] // Make sure to include textSelected in the dependency array
-    );
+    function intToRGB(i){
+        var c = (i & 0x00FFFFFF)
+            .toString(16)
+            .toUpperCase();
 
+        return "00000".substring(0, 6 - c.length) + c;
+    }*/
 
-    // VISIBILITY FOR EACH SPHERE
-    const visibility = useMemo(() => {
-        return sphereData.map((sphereProperties) => {
-            return calculateVisibility(
-                sphereProperties,
+    /*  COLORS
+   const colors = [];
+
+   sphereData.forEach((sphere) => {
+       const color = sphere.color;
+       colors.push(color);
+   });
+
+   console.log(colors);
+
+   */
+
+    // COLORS
+    const colors = useMemo(() => {
+        return Array.from({length: numSpheres}, (_, instanceId) => {
+            const color = new THREE.Color().setHSL(instanceId / numSpheres, 1, 0.5);
+            return color;
+        });
+    }, [numSpheres]);
+
+    // SPHERES RENDERING
+
+    useEffect(() => {
+        for (let instanceId = 0; instanceId < numSpheres; instanceId++) {
+            const sphere = sphereData[instanceId];
+
+            const isVisible = visibility(sphere, {
                 bpmSelectedLow,
                 bpmSelectedHigh,
                 textureSelectedLow,
@@ -143,41 +110,16 @@ function SpheresStart() {
                 moodSelected,
                 keySelected,
                 instrumentSelected,
-                textSelected
-            );
-        });
-    }, [sphereData, bpmSelectedLow, bpmSelectedHigh, textureSelectedLow, textureSelectedHigh, danceabilitySelectedLow, danceabilitySelectedHigh,
-        moodSelected, instrumentSelected, keySelected, textSelected]);
+                textSelected,
+            });
 
+            // console.log('isVisible', isVisible)
 
-    // MOUSE EVENTS
-    /*const [selectedItemIndex, setSelectedItemIndex] = useState(null);
-
-    const handleClick = (index) => {
-        setSelectedItemIndex(index);
-    };*/
-
-    const [temp, setTemp] = useState(false);
-    const longLeftClick = (event) => {
-        console.log('long left click occurred')
-        setTemp((prevTemp) => (!prevTemp))
-    }
-
-    // NAME OF THE SPHERES
-    const getNameToShow = (sphere, showSelected) => {
-        return showSelected ? "real name" : sphere.name;
-    };
-
-
-    // SPHERES RENDERING
-    useEffect(() => {
-        for (let instanceId = 0; instanceId < numSpheres; instanceId++) {
             const [positionX, positionY, positionZ] = calculatePosition(instanceId);
-            const sphereVisibility = visibility[instanceId];
-            const scale_for_visibility = sphereVisibility ? 1 : 0;
-            // const isClicked = getSelection(instanceId)
-
             const matrix = new THREE.Matrix4();
+            const scale_for_visibility = isVisible ? 1 : 0;
+
+
 
             matrix.compose(
                 new THREE.Vector3(positionX, positionY, positionZ),
@@ -187,34 +129,17 @@ function SpheresStart() {
 
             meshRef.current.setMatrixAt(instanceId, matrix);
             meshRef.current.setColorAt(instanceId, colors[instanceId]);
+
+            // console.log(sphereData[instanceId].color)
         }
-
         meshRef.current.instanceMatrix.needsUpdate = true;
-        meshRef.current.instanceColor.needsUpdate = true;
-
-        // console.log("Re-rendering of main useEffect");
-    }, [numSpheres, selectedOptionX, selectedOptionY, selectedOptionZ, visibility, sphereData]);
 
 
-    const labelsHtml = (
-        <SphereLabels
-            visible={visible}
-            numSpheres={numSpheres}
-            calculatePosition={calculatePosition}
-            visibility={visibility}
-            sphereData={sphereData}
-            sphereSize={sphereSize}
-            sphereGroupRef={meshRef}
-            labelRef={labelRef}
-            temp={temp}
-            getNameToShow={getNameToShow}
-            selectedOptionX={selectedOptionX}
-            selectedOptionY={selectedOptionY}
-            selectedOptionZ={selectedOptionZ}
-            getLabelContent={getLabelContent}
-            showSelected={showSelected}
-        />
-    );
+        // Update instanceMatrix and instanceColor as needed
+    }, [numSpheres, selectedOptionX, selectedOptionY, selectedOptionZ, sphereData, bpmSelectedLow, bpmSelectedHigh, textureSelectedLow, textureSelectedHigh, danceabilitySelectedLow, danceabilitySelectedHigh, moodSelected, keySelected, instrumentSelected, textSelected]);
+
+
+
 
 
 
@@ -227,7 +152,17 @@ function SpheresStart() {
                 onClick={ clickHandle }
             >
                 <meshStandardMaterial/>
-                {labelsHtml}
+                <SphereLabels
+                    visible={ visible }
+                    calculatePosition={calculatePosition}
+                    sphereSize={sphereSize}
+                    meshRef={meshRef}
+                    labelRef={labelRef}
+                    selectedOptionX={selectedOptionX}
+                    selectedOptionY={selectedOptionY}
+                    selectedOptionZ={selectedOptionZ}
+                    showSelected={showSelected}
+                />
 
             </instancedMesh>
         </>
@@ -241,5 +176,10 @@ function SpheresStart() {
         </>
     );
 }
+
+
+
+
+
 
 
