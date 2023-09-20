@@ -3,7 +3,7 @@ import {OrbitControls, PerspectiveCamera, useHelper} from '@react-three/drei'
 import {DirectionalLightHelper} from "three";
 import { useFrame} from "@react-three/fiber";
 import { useKeyboardControls} from "@react-three/drei";
-import {useNumSpheres} from "../contexts/basicSphereProperties/numSpheresContext/NumSpheresContext";
+import {useNumSpheres} from "../../contexts/basicSphereProperties/numSpheresContext/NumSpheresContext";
 
 export default function LightsAndShadows() {
 

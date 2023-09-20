@@ -1,6 +1,6 @@
 import React, {createContext, useEffect, useState} from 'react';
 import { button, folder, useControls } from 'leva';
-import { useLabels } from '../../LabelsContext';
+import { useLabels } from '../../labelsContext/LabelsContext';
 
 const OptionsContext = createContext();
 export const OptionsProvider = ({ children }) => {

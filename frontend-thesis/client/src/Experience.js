@@ -1,20 +1,20 @@
 import {Box, OrbitControls} from "@react-three/drei";
 import React, { useState, useEffect } from "react";
-import LightsAndShadows from "./components/LightsAndShadows";
+import LightsAndShadows from "./components/inProgress/LightsAndShadows";
 import Plane from "./components/plane/Plane.js";
 import { Physics, Debug} from "@react-three/rapier";
 import Spheres from "./components/spheres/Spheres";
 import {NumSpheresProvider} from "./contexts/basicSphereProperties/numSpheresContext/NumSpheresContext";
 import {Perf} from "r3f-perf";
-import {LabelsProvider} from "./contexts/LabelsContext";
+import {LabelsProvider} from "./contexts/labelsContext/LabelsContext";
 import {OptionsProvider} from "./contexts/levaControls/axisControls/OptionsContext";
 import WelcomeText from "./components/inProgress/WelcomeText";
-import Popup from "./components/Popup";
+import Popup from "./components/inProgress/Popup";
 import {SlidersProvider} from "./contexts/levaControls/filtersControls/SlidersContext";
 import {SpherePropertiesProvider} from "./contexts/SpherePropertiesContext";
 import {ScaleLoader} from "react-spinners";
 import Dashboard from "./components/inProgress/Dashboard";
-import InfoSphere from "./components/InfoSphere";
+import InfoSphere from "./components/inProgress/InfoSphere";
 import { DataProvider } from "./contexts/DataContext";
 import {BasicLevaProvider} from "./contexts/levaControls/basicSphereLeva/BasicLevaContext";
 

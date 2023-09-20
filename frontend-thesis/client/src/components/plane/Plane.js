@@ -2,7 +2,7 @@ import * as THREE from 'three'
 import {Html, MeshReflectorMaterial, useHelper, useKeyboardControls} from '@react-three/drei'
 import '../../styles/style.css'
 import { useRef } from "react";
-import {useLabels} from "../../contexts/LabelsContext";
+import {useLabels} from "../../contexts/labelsContext/LabelsContext";
 import {useOptions, useOptionsX} from "../../contexts/levaControls/axisControls/OptionsContext";
 import {useNumSpheres} from "../../contexts/basicSphereProperties/numSpheresContext/NumSpheresContext";
 

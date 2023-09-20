@@ -9,7 +9,7 @@ import { getLabelContent } from "../labels/LabelComponent";
 import SphereLabels from '../labels/SphereLabels';
 import SphereDataGenerator from "./SphereDataGenerator";
 import CalculatePosition from "./CalculatePosition";
-import {clickHandle, rightClickHandle} from "../MouseEvents";
+import {clickHandle, rightClickHandle} from "../inProgress/MouseEvents";
 
 // import dashboard from "./inProgress/Dashboard";
 
@@ -41,17 +41,19 @@ function SpheresStart() {
     } = useSpheresProperties()
 
     // ARRAY OF PROPS
-    const sphereData = SphereDataGenerator({
-        numSpheres,
-        getBpm,
-        getDanceability,
-        getMood,
-        getTexture,
-        getInstrument,
-        getKey,
-        getIndex,
-        getName,
-    });
+    const sphereData = SphereDataGenerator(
+        {
+            numSpheres,
+            getBpm,
+            getTexture,
+            getDanceability,
+            getMood,
+            getInstrument,
+            getKey,
+            getIndex,
+            getName
+        });
+    // console.log(sphereData)
 
     // COLORS
     const colors = useMemo(() => {

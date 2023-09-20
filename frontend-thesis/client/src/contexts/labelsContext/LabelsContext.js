@@ -1,6 +1,6 @@
 import React, { createContext } from 'react';
-import {useData} from "./DataContext";
-import LabelsDataExtractor from "../components/labels/LabelDataExtractor";
+import {useData} from "../DataContext";
+import LabelsDataExtractor from "./LabelDataExtractor";
 
 const LabelsContext = createContext();
 

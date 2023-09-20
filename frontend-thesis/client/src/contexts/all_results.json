@@ -1,6 +1,6 @@
 [
     {
-        "file_name": "Lost and Found.wav",
+        "name": "Lost and Found.wav",
         "id": 0,
         "BPM": 120.0,
         "BPM_2": 132.0,
@@ -28,7 +28,7 @@
         "harmonicity %": "94.4%"
     },
     {
-        "file_name": "Feuille Noir .wav",
+        "name": "Feuille Noir .wav",
         "id": 1,
         "BPM": 120.0,
         "BPM_2": 134.0,

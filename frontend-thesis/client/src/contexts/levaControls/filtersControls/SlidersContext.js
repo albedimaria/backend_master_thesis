@@ -1,6 +1,6 @@
 import React, {createContext, useContext, useState} from 'react';
 import {button, folder, useControls} from 'leva';
-import { useLabels } from "../../LabelsContext";
+import { useLabels } from "../../labelsContext/LabelsContext";
 
 const SlidersContext = createContext();
 

@@ -1,6 +1,6 @@
 import React, {createContext, useCallback, useMemo, useRef, useState} from 'react';
 import { useNumSpheres } from "./basicSphereProperties/numSpheresContext/NumSpheresContext";
-import {useLabels} from "./LabelsContext";
+import {useLabels} from "./labelsContext/LabelsContext";
 
 const SpherePropertiesContext = createContext();
 

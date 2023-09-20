@@ -24,7 +24,6 @@ export const DataProvider = ({children}) => {
     // console.log(data.length)
 
 
-
     return (
         <DataContext.Provider value = {{data, explanation} } >
             { children }
