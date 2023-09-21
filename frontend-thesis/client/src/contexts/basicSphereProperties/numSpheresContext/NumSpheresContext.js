@@ -8,17 +8,10 @@ export function NumSpheresProvider({ children }) {
 
     const {data, } = useData()
 
-    // console.log(explanation)
     const numSpheres = data.length
-
-    /*const [sphereSegments, setSphereSegments] = useState(4);
-    const [sphereSize, setSphereSize] = useState(0.3);*/
 
     const {  sphereSize, setSphereSize,
         sphereSegments, setSphereSegments } = GeometrySphere()
-
-
-    
 
     return (
         <NumSpheresContext.Provider value={{

@@ -1,12 +1,11 @@
-import React from 'react';
+import React, {useState} from 'react';
 import { Html } from '@react-three/drei';
 import { useVisibility } from "../../utils/VisibilityFunction";
 import getNameToShow from "../../contexts/labelsContext/ChangingNameFunction";
 import SphereDataGenerator from "../spheres/SphereDataGenerator";
-import { getLabelContent } from "./LabelComponent";
+import { getLabelContent } from "./LabelsFromAxisFunction";
 
 const SphereLabels = ({
-                          visible,
                           calculatePosition,
                           sphereSize,
                           meshRef,
@@ -15,20 +14,23 @@ const SphereLabels = ({
                           selectedOptionY,
                           selectedOptionZ,
                           showSelected,
+                          labelVisibility
                       }) => {
 
-    const visibility = useVisibility(); // Use the visibility hook
     const sphereData = SphereDataGenerator();
+    const multiplying = 1.4
+    const additional = 0.6
 
-    return visible
+    return labelVisibility
         ? Array.from({ length: sphereData.length }, (_, instanceId) => {
             const positionOpt = calculatePosition(instanceId);
 
             const positionLabels = [
                 positionOpt[0],
-                positionOpt[1] + sphereSize * 1.4 + 0.6,
+                positionOpt[1] + sphereSize * multiplying + additional,
                 positionOpt[2],
             ];
+
 
             const featureContent = (
                 <>
@@ -38,10 +40,9 @@ const SphereLabels = ({
                 </>
             );
 
-            console.log('featCont', featureContent)
-
             return (
-                visibility(sphereData[instanceId], { showSelected }) && ( // Check visibility using the hook
+                    labelVisibility[instanceId] && ( // Check visibility using the hook
+
                     <group key={instanceId}>
                         <Html
                             position={positionLabels}
@@ -51,8 +52,7 @@ const SphereLabels = ({
                             occlude={[meshRef, ...labelRef.current]}
                             ref={(ref) => (labelRef.current[instanceId] = ref)}
                         >
-                            {getNameToShow(sphereData[instanceId], "real name", showSelected)}
-                            {getLabelContent(selectedOptionX, sphereData[instanceId])} <br />
+                            {getNameToShow(sphereData[instanceId], featureContent, showSelected)}
 
                         </Html>
                     </group>
@@ -62,25 +62,5 @@ const SphereLabels = ({
         : null;
 };
 
+
 export default SphereLabels;
-
-
-/*       const featureLabels = [
-                positionOpt[0],
-                positionOpt[1] - sphereSize * 0.8 - 0.6,
-                positionOpt[2] + sphereSize * 1.4 + 0.3,
-            ];*/
-
-{/*         {temp && (
-                            <Html
-                                position={featureLabels}
-                                wrapperClass="features"
-                                center
-                                distanceFactor={16}
-                                occlude={[sphereGroupRef, ...labelRef.current]}
-                            >
-                                {`${getLabelContent(selectedOptionX, sphereData[instanceId])}`} <br />
-                                {`${getLabelContent(selectedOptionY, sphereData[instanceId])}`} <br />
-                                {`${getLabelContent(selectedOptionZ, sphereData[instanceId])}`} <br />
-                            </Html>
-                        )}*/}

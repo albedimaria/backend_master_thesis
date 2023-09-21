@@ -4,32 +4,23 @@ import React from "react";
 import { useNumSpheres } from "../../contexts/basicSphereProperties/numSpheresContext/NumSpheresContext";
 import { useOptions } from "../../contexts/levaControls/axisControls/OptionsContext";
 import { useSliders } from "../../contexts/levaControls/filtersControls/SlidersContext";
-import { useSpheresProperties } from "../../contexts/SpherePropertiesContext";
-import { getLabelContent } from "../labels/LabelComponent";
 import SphereLabels from '../labels/SphereLabels';
 import SphereDataGenerator from "./SphereDataGenerator";
 import CalculatePosition from "./CalculatePosition";
-import {clickHandle, rightClickHandle} from "../../utils/MouseEvents";
 import { useVisibility } from "../../utils/VisibilityFunction";
-import {Html} from "@react-three/drei";
-import sphereLabels from "../labels/SphereLabels";
 
 function SpheresStart() {
 
     const { numSpheres, sphereSize, setSphereSize, sphereSegments, setSphereSegments } = useNumSpheres();         // SPHERES BASIC CONTROLS
-    const {selectedOptionX, selectedOptionY, selectedOptionZ} = useOptions()    // AXIS CHOICE
-
-
-    const [visible, setVisible] = useState(true)
-    const meshRef = useRef([])
-    const labelRef = useRef([]);
-    const sphereGeometry = useMemo(() => new THREE.SphereGeometry(sphereSize, sphereSegments, sphereSegments), [sphereSize, sphereSegments]);
-
+    const { selectedOptionX, selectedOptionY, selectedOptionZ} = useOptions()    // AXIS CHOICE
 
     // ARRAY OF PROPS
     const sphereData = SphereDataGenerator();
 
-
+    const meshRef = useRef([])
+    const labelRef = useRef([]);
+    const sphereGeometry = useMemo(() => new THREE.SphereGeometry(sphereSize, sphereSegments, sphereSegments), [sphereSize, sphereSegments]);
+    const [labelVisibility, setLabelVisibility] = useState(new Array(sphereData.length).fill(true));
 
 
     // POSITION OF EACH SPHERE
@@ -95,7 +86,6 @@ function SpheresStart() {
     }, [numSpheres]);
 
     // SPHERES RENDERING
-
     useEffect(() => {
         for (let instanceId = 0; instanceId < numSpheres; instanceId++) {
             const sphere = sphereData[instanceId];
@@ -113,13 +103,9 @@ function SpheresStart() {
                 textSelected,
             });
 
-            // console.log('isVisible', isVisible)
-
             const [positionX, positionY, positionZ] = calculatePosition(instanceId);
             const matrix = new THREE.Matrix4();
             const scale_for_visibility = isVisible ? 1 : 0;
-
-
 
             matrix.compose(
                 new THREE.Vector3(positionX, positionY, positionZ),
@@ -139,6 +125,15 @@ function SpheresStart() {
     }, [numSpheres, selectedOptionX, selectedOptionY, selectedOptionZ, sphereData, bpmSelectedLow, bpmSelectedHigh, textureSelectedLow, textureSelectedHigh, danceabilitySelectedLow, danceabilitySelectedHigh, moodSelected, keySelected, instrumentSelected, textSelected]);
 
 
+    const clickHandle = (e) => {
+        e.stopPropagation();
+        setLabelVisibility((prevLabelVisibility) => {
+            prevLabelVisibility[e.instanceId] = !prevLabelVisibility[e.instanceId];
+            // console.log(`Label visibility for Instance ID ${e.instanceId} toggled to ${prevLabelVisibility[e.instanceId]}`);
+            return [...prevLabelVisibility];
+        });
+        // console.log("Instance ID:", e.instanceId);
+    }
 
 
 
@@ -153,7 +148,6 @@ function SpheresStart() {
             >
                 <meshStandardMaterial/>
                 <SphereLabels
-                    visible={ visible }
                     calculatePosition={calculatePosition}
                     sphereSize={sphereSize}
                     meshRef={meshRef}
@@ -162,6 +156,7 @@ function SpheresStart() {
                     selectedOptionY={selectedOptionY}
                     selectedOptionZ={selectedOptionZ}
                     showSelected={showSelected}
+                    labelVisibility={labelVisibility}
                 />
 
             </instancedMesh>

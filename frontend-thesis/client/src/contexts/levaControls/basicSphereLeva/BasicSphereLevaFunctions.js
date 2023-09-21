@@ -8,8 +8,6 @@ const BasicSphereLevaFunctions = () => {
         sphereSize, setSphereSize,
         sphereSegments, setSphereSegments } = useNumSpheres()
 
-   /* const [sphereSegments, setSphereSegments] = useState(4);
-    const [sphereSize, setSphereSize] = useState(0.3);*/
 
     // RESOLUTION INCREMENT / DECREMENT
     const increaseResolution = () => {

@@ -1,4 +1,4 @@
-// LabelComponent.js
+// LabelsFromAxisFunction.js
 
 export const getLabelContent = (option, sphereData) => {
     switch (option) {
