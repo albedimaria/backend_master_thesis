@@ -14,7 +14,8 @@ const SphereLabels = ({
                           selectedOptionY,
                           selectedOptionZ,
                           showSelected,
-                          labelVisibility
+                          labelVisibility,
+                          visibility
                       }) => {
 
     const sphereData = SphereDataGenerator();

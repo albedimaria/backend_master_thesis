@@ -103,6 +103,15 @@ function SpheresStart() {
                 textSelected,
             });
 
+            // Use the labelVisibility state to determine visibility
+            const isSphereVisible = isVisible;
+
+            // Update labelVisibility based on isVisible
+            setLabelVisibility((prevLabelVisibility) => {
+                prevLabelVisibility[instanceId] = isSphereVisible;
+                return [...prevLabelVisibility];
+            });
+
             const [positionX, positionY, positionZ] = calculatePosition(instanceId);
             const matrix = new THREE.Matrix4();
             const scale_for_visibility = isVisible ? 1 : 0;
