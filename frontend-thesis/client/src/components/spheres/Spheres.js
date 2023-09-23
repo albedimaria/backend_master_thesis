@@ -169,7 +169,7 @@ function SpheresStart() {
                 args={[ null, null, numSpheres ]}
                 geometry={ sphereGeometry }
                 onClick={ clickHandle }
-                onPointerOver={ onPointerOver }
+                // onPointerOver={ onPointerOver }
             >
                 <meshStandardMaterial/>
                 <SphereLabels
