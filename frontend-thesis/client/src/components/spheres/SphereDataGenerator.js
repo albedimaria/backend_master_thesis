@@ -1,15 +1,17 @@
 import { useMemo } from 'react';
 import {useData} from "../../contexts/DataContext";
+import getNameToShow from "../../contexts/labelsContext/ChangingNameFunction";
+import {getLabelContent} from "../labels/LabelsFromAxisFunction";
+import {useOptions} from "../../contexts/levaControls/axisControls/OptionsContext";
 
 
 function SphereDataGenerator() {
 
-
     const {data, explanation} = useData()
 
 
-
     const sphereData = useMemo(() => {
+
         return data.map((sphere, instanceId) => ({
             bpm: sphere.BPM,
             danceability: sphere.danceability,
@@ -18,8 +20,8 @@ function SphereDataGenerator() {
             instrument: sphere.instrument,
             key: "F",
             index: instanceId,
-            name: sphere.name,
-            color: sphere.color
+            name: sphere.name.toLowerCase(),
+            color: sphere.color,
         }));
     }, [data]);
 

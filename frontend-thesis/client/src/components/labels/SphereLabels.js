@@ -6,8 +6,6 @@ import SphereDataGenerator from "../spheres/SphereDataGenerator";
 import { getLabelContent } from "./LabelsFromAxisFunction";
 
 const SphereLabels = ({
-                          calculatePosition,
-                          sphereSize,
                           meshRef,
                           labelRef,
                           selectedOptionX,
@@ -15,24 +13,24 @@ const SphereLabels = ({
                           selectedOptionZ,
                           showSelected,
                           labelVisibility,
-                          visibility
                       }) => {
 
     const sphereData = SphereDataGenerator();
-    const multiplying = 1.4
-    const additional = 0.6
+   /* const multiplying = 1.4
+    const additional = 0.6*/
 
     return labelVisibility
         ? Array.from({ length: sphereData.length }, (_, instanceId) => {
-            const positionOpt = calculatePosition(instanceId);
+
+            /*     const positionOpt = calculatePosition(instanceId);
 
             const positionLabels = [
                 positionOpt[0],
                 positionOpt[1] + sphereSize * multiplying + additional,
                 positionOpt[2],
-            ];
+            ];*/
 
-
+            const positionLabels = [22.5, 25, 0]
             const featureContent = (
                 <>
                     {getLabelContent(selectedOptionX, sphereData[instanceId])} <br />
@@ -40,6 +38,7 @@ const SphereLabels = ({
                     {getLabelContent(selectedOptionZ, sphereData[instanceId])} <br />
                 </>
             );
+
 
             return (
                     labelVisibility[instanceId] && ( // Check visibility using the hook
@@ -49,7 +48,7 @@ const SphereLabels = ({
                             position={positionLabels}
                             wrapperClass="label"
                             center
-                            distanceFactor={16}
+                            distanceFactor={30}
                             occlude={[meshRef, ...labelRef.current]}
                             ref={(ref) => (labelRef.current[instanceId] = ref)}
                         >

@@ -43,7 +43,6 @@ export default function Experience() {
                                 <BasicLevaProvider>
                                     <SlidersProvider>
                                         <OptionsProvider>
-                                            <SpherePropertiesProvider>
                                                 {/*
                                             <Dashboard />
 */}
@@ -54,7 +53,6 @@ export default function Experience() {
                                                 <Spheres />
                                                 <Plane />
                                                 <LightsAndShadows />
-                                            </SpherePropertiesProvider>
                                         </OptionsProvider>
                                     </SlidersProvider>
                                 </BasicLevaProvider>

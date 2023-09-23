@@ -20,7 +20,7 @@ function SpheresStart() {
     const meshRef = useRef([])
     const labelRef = useRef([]);
     const sphereGeometry = useMemo(() => new THREE.SphereGeometry(sphereSize, sphereSegments, sphereSegments), [sphereSize, sphereSegments]);
-    const [labelVisibility, setLabelVisibility] = useState(new Array(sphereData.length).fill(true));
+    const [labelVisibility, setLabelVisibility] = useState(new Array(sphereData.length).fill(false));
 
 
     // POSITION OF EACH SPHERE
@@ -85,6 +85,26 @@ function SpheresStart() {
         });
     }, [numSpheres]);
 
+    const clickHandle = (e) => {
+        e.stopPropagation();
+        setLabelVisibility((prevLabelVisibility) => {
+            prevLabelVisibility[e.instanceId] = !prevLabelVisibility[e.instanceId];
+            // console.log(`Label visibility for Instance ID ${e.instanceId} toggled to ${prevLabelVisibility[e.instanceId]}`);
+            return [...prevLabelVisibility];
+        });
+        // console.log("Instance ID:", e.instanceId);
+    }
+
+/*    const onPointerOver = (e) => {
+        e.stopPropagation();
+        setLabelVisibility((prevLabelVisibility) => {
+            prevLabelVisibility[e.instanceId] = !prevLabelVisibility[e.instanceId];
+            // console.log(`Label visibility for Instance ID ${e.instanceId} toggled to ${prevLabelVisibility[e.instanceId]}`);
+            return [...prevLabelVisibility];
+        });
+        // console.log("Instance ID:", e.instanceId);
+    }*/
+
     // SPHERES RENDERING
     useEffect(() => {
         for (let instanceId = 0; instanceId < numSpheres; instanceId++) {
@@ -106,11 +126,14 @@ function SpheresStart() {
             // Use the labelVisibility state to determine visibility
             const isSphereVisible = isVisible;
 
-            // Update labelVisibility based on isVisible
-            setLabelVisibility((prevLabelVisibility) => {
-                prevLabelVisibility[instanceId] = isSphereVisible;
-                return [...prevLabelVisibility];
-            });
+            // Update labelVisibility based on isVisible only if it's false
+            if (!isSphereVisible) {
+                setLabelVisibility((prevLabelVisibility) => {
+                    prevLabelVisibility[instanceId] = isSphereVisible;
+                    return [...prevLabelVisibility];
+                });
+            }
+
 
             const [positionX, positionY, positionZ] = calculatePosition(instanceId);
             const matrix = new THREE.Matrix4();
@@ -134,15 +157,7 @@ function SpheresStart() {
     }, [numSpheres, selectedOptionX, selectedOptionY, selectedOptionZ, sphereData, bpmSelectedLow, bpmSelectedHigh, textureSelectedLow, textureSelectedHigh, danceabilitySelectedLow, danceabilitySelectedHigh, moodSelected, keySelected, instrumentSelected, textSelected]);
 
 
-    const clickHandle = (e) => {
-        e.stopPropagation();
-        setLabelVisibility((prevLabelVisibility) => {
-            prevLabelVisibility[e.instanceId] = !prevLabelVisibility[e.instanceId];
-            // console.log(`Label visibility for Instance ID ${e.instanceId} toggled to ${prevLabelVisibility[e.instanceId]}`);
-            return [...prevLabelVisibility];
-        });
-        // console.log("Instance ID:", e.instanceId);
-    }
+
 
 
 
@@ -154,11 +169,10 @@ function SpheresStart() {
                 args={[ null, null, numSpheres ]}
                 geometry={ sphereGeometry }
                 onClick={ clickHandle }
+                onPointerOver={ onPointerOver }
             >
                 <meshStandardMaterial/>
                 <SphereLabels
-                    calculatePosition={calculatePosition}
-                    sphereSize={sphereSize}
                     meshRef={meshRef}
                     labelRef={labelRef}
                     selectedOptionX={selectedOptionX}

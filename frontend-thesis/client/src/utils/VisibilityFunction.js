@@ -1,11 +1,15 @@
 // VisibilityUtils.js
-import { useCallback } from 'react';
+import React, { useCallback } from 'react';
 import {useSliders} from "../contexts/levaControls/filtersControls/SlidersContext";
 import SphereDataGenerator from "../components/spheres/SphereDataGenerator";
+import getNameToShow from "../contexts/labelsContext/ChangingNameFunction";
+import {getLabelContent} from "../components/labels/LabelsFromAxisFunction";
+import {useOptions} from "../contexts/levaControls/axisControls/OptionsContext";
 
 export const useVisibility = () => {
 
     const sphereData = SphereDataGenerator();
+    const { selectedOptionX, selectedOptionY, selectedOptionZ } = useOptions()
 
     // FILTERS
     const {
@@ -48,16 +52,25 @@ export const useVisibility = () => {
             name,
         } = sphere;
 
+        const feature = [
+            getLabelContent(selectedOptionX, sphere),
+            getLabelContent(selectedOptionY, sphere),
+            getLabelContent(selectedOptionZ, sphere)]
+
+        // console.log(feature)
+
         if (textSelected) {
             // If textSelected is not empty, apply filtering based on textSelected
+
+
             const isVisible = (
-                name[0].includes(textSelected) ||
-                name[2].includes(textSelected) ||
-                name[4].includes(textSelected)
+                name.includes(textSelected) ||
+                feature.some((item) => item.includes(textSelected))
             );
 
-            // console.log(`Visibility for sphere with name "${name}" based on textSelected: ${isVisible}`);
-
+            console.log(`Visibility for "${name}" based on textSelected "${textSelected}": ${isVisible}`);
+            console.log(`Text Selected: "${textSelected}"`);
+            return isVisible;
             return isVisible;
 
         } else {
@@ -78,7 +91,7 @@ export const useVisibility = () => {
             return isVisible;
         }
     }, [sphereData, bpmSelectedLow, bpmSelectedHigh, textureSelectedLow, textureSelectedHigh, danceabilitySelectedLow, danceabilitySelectedHigh,
-        moodSelected, instrumentSelected, keySelected, textSelected]);
+        moodSelected, instrumentSelected, keySelected, textSelected, selectedOptionX, selectedOptionY, selectedOptionZ]);
 
     return visibility
 };
