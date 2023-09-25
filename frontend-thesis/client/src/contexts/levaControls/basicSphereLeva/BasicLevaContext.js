@@ -1,10 +1,10 @@
-import React, {createContext, useState} from 'react';
+import React, {createContext, useEffect, useState} from 'react';
 import BasicSphereLevaFunctions from "./BasicSphereLevaFunctions";
 import {button, folder, useControls} from "leva";
-import GeometrySphere from "../../basicSphereProperties/geometricProperties/GeometrySphere";
 import {useNumSpheres} from "../../basicSphereProperties/numSpheresContext/NumSpheresContext";
 
 const BasicLevaContext = createContext()
+
 
 export const BasicLevaProvider = ({ children }) => {
 

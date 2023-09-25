@@ -16,8 +16,8 @@ const SphereLabels = ({
                       }) => {
 
     const sphereData = SphereDataGenerator();
-   /* const multiplying = 1.4
-    const additional = 0.6*/
+    /* const multiplying = 1.4
+     const additional = 0.6*/
 
     return labelVisibility
         ? Array.from({ length: sphereData.length }, (_, instanceId) => {

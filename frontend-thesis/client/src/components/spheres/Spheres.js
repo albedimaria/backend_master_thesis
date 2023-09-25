@@ -8,6 +8,7 @@ import SphereLabels from '../labels/SphereLabels';
 import SphereDataGenerator from "./SphereDataGenerator";
 import CalculatePosition from "./CalculatePosition";
 import { useVisibility } from "../../utils/VisibilityFunction";
+import LabelsState from "../../contexts/labelsContext/LabelsState";
 
 function SpheresStart() {
 
@@ -20,8 +21,7 @@ function SpheresStart() {
     const meshRef = useRef([])
     const labelRef = useRef([]);
     const sphereGeometry = useMemo(() => new THREE.SphereGeometry(sphereSize, sphereSegments, sphereSegments), [sphereSize, sphereSegments]);
-    const [labelVisibility, setLabelVisibility] = useState(new Array(sphereData.length).fill(false));
-
+    const { labelVisibility, setLabelVisibility } = LabelsState()
 
     // POSITION OF EACH SPHERE
     const calculatePosition = CalculatePosition({
@@ -85,15 +85,6 @@ function SpheresStart() {
         });
     }, [numSpheres]);
 
-    const clickHandle = (e) => {
-        e.stopPropagation();
-        setLabelVisibility((prevLabelVisibility) => {
-            prevLabelVisibility[e.instanceId] = !prevLabelVisibility[e.instanceId];
-            // console.log(`Label visibility for Instance ID ${e.instanceId} toggled to ${prevLabelVisibility[e.instanceId]}`);
-            return [...prevLabelVisibility];
-        });
-        // console.log("Instance ID:", e.instanceId);
-    }
 
 /*    const onPointerOver = (e) => {
         e.stopPropagation();
@@ -159,7 +150,15 @@ function SpheresStart() {
 
 
 
-
+    const clickHandle = (e) => {
+        e.stopPropagation();
+        setLabelVisibility((prevLabelVisibility) => {
+            prevLabelVisibility[e.instanceId] = !prevLabelVisibility[e.instanceId];
+            // console.log(`Label visibility for Instance ID ${e.instanceId} toggled to ${prevLabelVisibility[e.instanceId]}`);
+            return [...prevLabelVisibility];
+        });
+        // console.log("Instance ID:", e.instanceId);
+    }
 
 
     return (

@@ -111,6 +111,10 @@ export const SlidersProvider = ({ children }) => {
                 label: <span>filter <br />by name</span>,
                 onChange: (value) => setTextSelected(value)
             },
+            "NB": {
+                value: "press enter to confirm",
+                editable: false
+            },
         }, { collapsed: true }
         )
     }));
