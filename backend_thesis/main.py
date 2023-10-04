@@ -1,26 +1,86 @@
+import math
 import os, json
-from utils_features.featureProcessing import process_audio_file
-from featureJson import create_results_json
-from paths.pathsToFolders import dir_path, json_dir
+# from utils_features.featureProcessing import process_audio_file
+# from featureJson import create_results_json
+import essentia.standard as esstd
+import numpy as np
+import essentia
+from paths.pathsToFolders import dir_path, json_dir, model_path
+from utils.tempo_ranges import tempo_ranges
 
 from flask import Flask
 
-
-# Create an empty list to store the results for each audio file
-all_results = []
-
 app = Flask(__name__)
 
-# @app.route("/members")
-# def members(): 
-#    return {"members": ["Member1", "Member2"]}
+all_results = []
+pool = essentia.Pool()
+
+classes_embedding_model = esstd.TensorflowPredictEffnetDiscogs(graphFilename=os.path.join(model_path, "discogs-effnet-bs64-1.pb"), output="PartitionedCall:1")
+mood_embedding_model = esstd.TensorflowPredictEffnetDiscogs(graphFilename=os.path.join(model_path, "discogs_artist_embeddings-effnet-bs64-1.pb"), output="PartitionedCall:1")
+
+# timbre model and labels
+timbre_model = esstd.TensorflowPredict2D(graphFilename=os.path.join(model_path, 'timbre-effnet-discogs-1.pb'), output="model/Softmax")
+with open(os.path.join(model_path, 'timbre-effnet-discogs-1.json'), 'r') as json_file:
+    metadata = json.load(json_file)
+timbre_labels = metadata['classes']
+
+# mood model and labels
+mood_model = esstd.TensorflowPredict2D(graphFilename=os.path.join(model_path, 'mtg_jamendo_moodtheme-discogs_artist_embeddings-effnet-1.pb'))
+
+with open(os.path.join(model_path, 'discogs_label_embeddings-effnet-bs64-1.json'), 'r') as json_file:
+                metadata = json.load(json_file)
+mood_labels = metadata['classes']
+
+# instrument
+instrument_model = esstd.TensorflowPredict2D(graphFilename=os.path.join(model_path, 'mtg_jamendo_instrument-discogs-effnet-1.pb'))
+
+with open(os.path.join(model_path, 'mtg_jamendo_instrument-effnet-discogs_artist_embeddings-1.json'), 'r') as json_file:
+                metadata = json.load(json_file)
+instrument_labels = metadata['classes']
 
 
+
+print("MODEL LOADED")
+
+
+
+def load_audio(file_path):
+    """Load and resample audio from the given file path."""
+    # audio_og = esstd.MonoLoader(filename=file_path, sampleRate=44100)()
+    audio = esstd.MonoLoader(filename=file_path, sampleRate=16000, resampleQuality=4)()
+    return audio
+
+
+def predict_label(predictions, class_labels):
+    """
+    Predict the primary label(s) present in the audio file.
+    Returns the predicted label(s).
+    """
+    # Extract embeddings using the embedding model
+    """embeddings = embedding_model(audio)
+
+    # Predict labels using the classification model
+    predictions = classification_model(embeddings)"""
+
+    # Extract the tags from the predictions
+    tags = predictions[0][:len(class_labels)]
+
+    # Determine the most likely label(s) based on the tag probabilities
+    max_index = int(np.argmax(tags))
+    predicted_label = class_labels[max_index]
+
+    return predicted_label
+
+# Function to assign a tempo label based on the BPM range
+def assign_tempo_label(bpm):
+    for label, (min_bpm, max_bpm) in tempo_ranges.items():
+        if min_bpm <= bpm < max_bpm:
+            return label
+    return 'unknown'
 
 @app.route("/process_audio")
 def process_audio():
-    
-    all_results = []
+    print("START")
 
     for root, dirs, files in os.walk(dir_path):
         for file_name in files:
@@ -28,166 +88,89 @@ def process_audio():
                 file_path = os.path.join(root, file_name)
                 print("Loading file:", file_path)
 
-                # Process the audio file and append the results to the list
-                results = process_audio_file(file_path, file_name)
-                all_results.append(results)
+                audio = load_audio(file_path)
 
-    return { all_results }
+                # compute beat positions and BPM.
+                rhythm_extractor = esstd.RhythmExtractor2013(method="degara")
+                bpm, beats, beats_confidence, _, beats_intervals = rhythm_extractor(audio)
+                pool.add('bpm', bpm)
+
+                # tempo label
+                tempo_label = assign_tempo_label(bpm)
+
+                # key
+                key_extractor = esstd.KeyExtractor(profileType = 'Krumhansl')
+                key, scale, key_strength = key_extractor(audio)
+
+                # embeddings
+                classes_embeddings = classes_embedding_model(audio)
+                mood_embeddings = mood_embedding_model(audio)
+
+                # timbre
+                timbre_predictions = timbre_model(classes_embeddings)
+                timbre_predicted_label = predict_label(timbre_predictions, timbre_labels)
+
+                # mood
+                mood_predictions = mood_model(mood_embeddings)
+                mood_predicted_label = predict_label(mood_predictions, mood_labels)
+
+                # instrument - to review
+                instrument_predictions = instrument_model(classes_embeddings)
+                instrument_predicted_label = predict_label(instrument_predictions, instrument_labels)
+
+                # esstd.YamlOutput(filename='file_info', format='json')(pool)
+
+                # Process the audio file and append the results to the list
+                # results = process_audio_file(file_path, file_name)
+                results = {
+                    "file_name": file_name,
+                    "BPM": bpm,
+                    "key": key,
+                    "scale": scale,
+                    "key_strength": key_strength,
+                    "mood": mood_predicted_label,
+                    "tempo": tempo_label,
+                    # "danceability": 75,
+                    # "dynamic_complexity_norm": round(normalized_dynamic_complexity, 3),
+                    # "global_loudness_dB": round(global_loudness, 1),
+                    # "valence": valence,
+                    # "arousal": arousal,
+                    # "color": color,
+                    # "emotion": emotion,
+                    "timbre": timbre_predicted_label,
+                    "instrument": instrument_predicted_label,
+                    # "pitch": pitch,
+                    # "pitch confidence": pitch_confidence_pct,
+                    # "harmonicity %": harmonicity_pct
+                }
+                all_results.append(results)
+    print("END")
+    return {"results": all_results}
 
 
 if __name__ == "__main__":
     # main()
     app.run(debug=True)
-    
 
-    
-    
-    
-"""  json_results_path = os.path.join(json_dir, 'all_results.json')
+    """    all_results = []
 
-    # Save all the results to a JSON file
-    with open(json_results_path, 'w') as json_file:
-        json.dump(all_results, json_file, indent=4)
-
-    # Create a separate JSON with the explanation of the data
-    explanation = create_results_json()
-
-    json_explanation_path = os.path.join(json_dir, 'explanation.json')
-
-    # Save the explanation JSON to a separate file
-    with open(json_explanation_path, 'w') as json_file:
-        json.dump(explanation, json_file, indent=4)"""
-    
-    
-    
-    
-    
-"""
-def main():
-    all_results = []
+    # Check if the explanation JSON file already exists
+    explanation_json_path = os.path.join(dir_path, 'explanation.json')
+    if not os.path.exists(explanation_json_path):
+        # If the JSON file doesn't exist, create it
+        create_explanation_json()
+    print("json done")
 
     for root, dirs, files in os.walk(dir_path):
         for file_name in files:
             if file_name.lower().endswith('.mp3') or file_name.lower().endswith('.wav'):
                 file_path = os.path.join(root, file_name)
                 print("Loading file:", file_path)
-                
+
                 # Process the audio file and append the results to the list
-                results = process_audio_file(file_path, file_name)
-                all_results.append(results)
+                # results = process_audio_file(file_path, file_name)
+                # all_results.append(results)
 
-    json_results_path = os.path.join(json_dir, 'all_results.json')
-
-    # Save all the results to a JSON file
-    with open(json_results_path, 'w') as json_file:
-        json.dump(all_results, json_file, indent=4)
-        
-    # Create a separate JSON with the explanation of the data
-    explanation = create_results_json() 
-    
-    json_explanation_path = os.path.join(json_dir, 'explanation.json')
-    
-    # Save the explanation JSON to a separate file
-    with open(json_explanation_path, 'w') as json_file:
-        json.dump(explanation, json_file, indent=4)
-
-
-
-"""
-
-
-    
-    
+    return all_results"""
     
 
-# audio_og, audio, cnn_audio = load_audio(file_path)
-
-                # # BPM
-                # global_bpm, local_bpm, local_probs = bpm_model(cnn_audio)
-                # global_bpm_square_16, _, _ = bpm_model_square_16(cnn_audio)
-                # global_bpm_temp_16, _, _ = bpm_model_temp_16(cnn_audio)
-                # global_bpm_percival = esstd.PercivalBpmEstimator()(audio_og)
-                # # global_bpm_degara, _, _ = esstd.BeatTrackerDegara()(resampled_audio)
-                # global_bpm_ext, _, _, _, _ = esstd.RhythmExtractor2013()(audio_og)
-                
-                # # Assign a tempo label based on the global BPM range
-                # tempo_label = assign_tempo_label(global_bpm)
-
-                # # VA CALC
-                # valence, arousal = calculate_valence_arousal(audio, va_embedding_model, va_model)
-            
-                # # COLOR
-                # color, emotion = get_sector_color_label(valence, arousal, threshold=THRESHOLD)
-
-                # # KEY
-                # tonal_extractor = esstd.TonalExtractor()
-                # tonal_features = tonal_extractor(audio_og)
-                # key = {
-                #         "estimated_key": tonal_features[9],
-                #         "key_scale": tonal_features[10],
-                #         "key_strength": round(tonal_features[11], 3)
-                #     }
-                
-
-                # # MOOD
-
-                # # Get the mood label with the corresponding index
-                # predicted_mood = predict_label(audio, mood_and_timbre_embedding_model, mood_model, mood_labels)
-
-
-                # # TIMBRE
-                # timbre_predicted = predict_label(audio, mood_and_timbre_embedding_model, timbre_model, timbre_labels)
-
-
-                # # INSTRUMENT
-                # instrument_predicted = predict_label(audio, instrument_embedding_model, instrument_model, instrument_labels)
-
-
-                # # DANCEABILITY
-
-                # activations = danceability_activations(audio)
-                # # Get the danceability probability from the activations array
-                # danceability_prob_decimal = activations.mean(axis=0)[dance_index]
-                # danceability_prob_percent = f'{100 * danceability_prob_decimal:.1f}%'
-
-
-                # # DYNAMIC COMPLEXITY
-
-                # # Predict the dynamic complexity using a machine learning model
-                # dynamic_complexity, global_loudness = esstd.DynamicComplexity()(audio_og)
-                # # Normalize the dynamic complexity coefficient by the global loudness level estimate
-                # normalized_dynamic_complexity = dynamic_complexity / abs(global_loudness)        
-
-
-                # # HARMONICITY AND PITCH
-
-                # pitch, pitch_confidence_pct, harmonicity, harmonicity_pct = extract_harmonicity_and_pitch(audio_og)
-                
-                
-
-                # Call the function to create the JSON object
-                # results = create_results_json(file_name, global_bpm, global_bpm_square_16, global_bpm_temp_16,
-                #                             global_bpm_percival, global_bpm_ext, key, predicted_mood, tempo_label,
-                #                             danceability_prob_percent, normalized_dynamic_complexity, global_loudness,
-                #                             valence, arousal, color, emotion, timbre_predicted, instrument_predicted,
-                #                             pitch, pitch_confidence_pct, harmonicity_pct)
-
-
-                # # Construct the path to the JSON file
-                # json_file_path = os.path.join(json_dir, f"{os.path.splitext(file_name)[0]}.json")
-
-                # # Save the results to the JSON file with indentation
-                # try:
-                #     with open(json_file_path, "w") as json_file:
-                #         json.dump(results, json_file, indent=4)
-                # except Exception as e:
-                #     print(f"Error saving JSON file: {str(e)}")
-                # else:
-                #     # Read the JSON file and print its contents with indentation
-                #     try:
-                #         with open(json_file_path, "r") as json_file:
-                #             json_data = json.load(json_file)
-                #             print("Results for", file_name)
-                #             print(json.dumps(json_data, indent=4))
-                #     except Exception as e:
-                #         print(f"Error reading JSON file: {str(e)}")
