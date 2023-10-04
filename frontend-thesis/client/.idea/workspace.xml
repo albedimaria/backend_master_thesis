@@ -1,0 +1,197 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project version="4">
+  <component name="AutoImportSettings">
+    <option name="autoReloadType" value="SELECTIVE" />
+  </component>
+  <component name="ChangeListManager">
+    <list default="true" id="1f52e6f6-abcf-4a59-9f51-748ab94915d1" name="Default Changelist" comment="" />
+    <option name="SHOW_DIALOG" value="false" />
+    <option name="HIGHLIGHT_CONFLICTS" value="true" />
+    <option name="HIGHLIGHT_NON_ACTIVE_CHANGELIST" value="false" />
+    <option name="LAST_RESOLUTION" value="IGNORE" />
+  </component>
+  <component name="ChangesViewManager" show_ignored="true">
+    <option name="groupingKeys">
+      <option value="directory" />
+    </option>
+  </component>
+  <component name="FileTemplateManagerImpl">
+    <option name="RECENT_TEMPLATES">
+      <list>
+        <option value="tsconfig.json" />
+        <option value="JavaScript File" />
+      </list>
+    </option>
+  </component>
+  <component name="Git.Settings">
+    <option name="RECENT_GIT_ROOT_PATH" value="$PROJECT_DIR$/../.." />
+    <option name="UPDATE_TYPE" value="REBASE" />
+  </component>
+  <component name="GitToolBoxStore">
+    <option name="projectConfigVersion" value="5" />
+  </component>
+  <component name="MarkdownSettingsMigration">
+    <option name="stateVersion" value="1" />
+  </component>
+  <component name="ProjectId" id="2PhH9uOW33zc1ZezBX8tBT5xKu5" />
+  <component name="ProjectLevelVcsManager">
+    <ConfirmationsSetting value="2" id="Add" />
+  </component>
+  <component name="ProjectViewState">
+    <option name="hideEmptyMiddlePackages" value="true" />
+    <option name="showLibraryContents" value="true" />
+  </component>
+  <component name="PropertiesComponent">{
+  &quot;keyToString&quot;: {
+    &quot;ASKED_ADD_EXTERNAL_FILES&quot;: &quot;true&quot;,
+    &quot;RunOnceActivity.ShowReadmeOnStart&quot;: &quot;true&quot;,
+    &quot;WebServerToolWindowFactoryState&quot;: &quot;false&quot;,
+    &quot;git-widget-placeholder&quot;: &quot;main&quot;,
+    &quot;ignore.virus.scanning.warn.message&quot;: &quot;true&quot;,
+    &quot;last_opened_file_path&quot;: &quot;//wsl$/Ubuntu/home/albertodimaria/thesis/frontend-thesis&quot;,
+    &quot;node.js.detected.package.eslint&quot;: &quot;true&quot;,
+    &quot;node.js.detected.package.tslint&quot;: &quot;true&quot;,
+    &quot;node.js.selected.package.eslint&quot;: &quot;(autodetect)&quot;,
+    &quot;node.js.selected.package.tslint&quot;: &quot;(autodetect)&quot;,
+    &quot;nodejs_package_manager_path&quot;: &quot;npm&quot;,
+    &quot;settings.editor.selected.configurable&quot;: &quot;project.propVCSSupport.DirectoryMappings&quot;,
+    &quot;vue.rearranger.settings.migration&quot;: &quot;true&quot;
+  }
+}</component>
+  <component name="ReactDesignerToolWindowState">
+    <option name="myId2Visible">
+      <map>
+        <entry key="com.haulmont.rcb.reactComponents" value="false" />
+        <entry key="com.haulmont.rcb.reactInspector" value="false" />
+      </map>
+    </option>
+  </component>
+  <component name="RecentsManager">
+    <key name="CopyFile.RECENT_KEYS">
+      <recent name="\\wsl.localhost\Ubuntu\home\albertodimaria\thesis\frontend-thesis\src" />
+    </key>
+    <key name="MoveFile.RECENT_KEYS">
+      <recent name="\\wsl.localhost\Ubuntu\home\albertodimaria\thesis\frontend-thesis\src\styles" />
+      <recent name="\\wsl.localhost\Ubuntu\home\albertodimaria\thesis\frontend-thesis\src\contexts" />
+      <recent name="\\wsl.localhost\Ubuntu\home\albertodimaria\thesis\frontend-thesis\src\components" />
+      <recent name="\\wsl.localhost\Ubuntu\home\albertodimaria\thesis\frontend-thesis\src\backupForMe" />
+      <recent name="\\wsl.localhost\Ubuntu\home\albertodimaria\thesis\frontend-thesis\public" />
+    </key>
+  </component>
+  <component name="SpellCheckerSettings" RuntimeDictionaries="0" Folders="0" CustomDictionaries="0" DefaultDictionary="application-level" UseSingleDictionary="true" transferred="true" />
+  <component name="TaskManager">
+    <task active="true" id="Default" summary="Default task">
+      <changelist id="1f52e6f6-abcf-4a59-9f51-748ab94915d1" name="Default Changelist" comment="" />
+      <created>1683902271769</created>
+      <option name="number" value="Default" />
+      <option name="presentableId" value="Default" />
+      <updated>1683902271769</updated>
+      <workItem from="1683902273090" duration="4318000" />
+      <workItem from="1684164501520" duration="24525000" />
+      <workItem from="1684338064545" duration="3136000" />
+      <workItem from="1684419422064" duration="14118000" />
+      <workItem from="1687519743593" duration="395000" />
+      <workItem from="1687520743765" duration="3043000" />
+      <workItem from="1687777807111" duration="7013000" />
+      <workItem from="1687785083919" duration="1087000" />
+      <workItem from="1687786337462" duration="20657000" />
+      <workItem from="1687820257585" duration="5403000" />
+      <workItem from="1687962902652" duration="16014000" />
+      <workItem from="1687984845552" duration="10171000" />
+      <workItem from="1688035167035" duration="4028000" />
+      <workItem from="1688396924997" duration="12711000" />
+      <workItem from="1688430102875" duration="64604000" />
+      <workItem from="1688640173474" duration="1532000" />
+      <workItem from="1688983005077" duration="6247000" />
+      <workItem from="1688989817931" duration="611000" />
+      <workItem from="1689005187210" duration="27068000" />
+      <workItem from="1689243952635" duration="12412000" />
+      <workItem from="1689266033678" duration="6468000" />
+      <workItem from="1689326274038" duration="2796000" />
+      <workItem from="1689609363440" duration="25886000" />
+      <workItem from="1689727403855" duration="12474000" />
+      <workItem from="1690212449118" duration="25424000" />
+      <workItem from="1690387834282" duration="18848000" />
+      <workItem from="1690733514204" duration="28430000" />
+      <workItem from="1690856734098" duration="27000" />
+      <workItem from="1690906006696" duration="24915000" />
+      <workItem from="1691161814157" duration="12341000" />
+      <workItem from="1692816078635" duration="26280000" />
+      <workItem from="1693332029030" duration="2961000" />
+      <workItem from="1693408463482" duration="301000" />
+      <workItem from="1695828221962" duration="51000" />
+      <workItem from="1695895004386" duration="239000" />
+      <workItem from="1695895279831" duration="2125000" />
+      <workItem from="1695898578980" duration="82000" />
+      <workItem from="1695933174837" duration="2414000" />
+      <workItem from="1695991922741" duration="1455000" />
+      <workItem from="1696174083669" duration="28000" />
+    </task>
+    <task id="LOCAL-00001" summary="default commit">
+      <created>1687521754146</created>
+      <option name="number" value="00001" />
+      <option name="presentableId" value="LOCAL-00001" />
+      <option name="project" value="LOCAL" />
+      <updated>1687521754146</updated>
+    </task>
+    <task id="LOCAL-00002" summary="massive update / commit">
+      <option name="closed" value="true" />
+      <created>1689101985669</created>
+      <option name="number" value="00002" />
+      <option name="presentableId" value="LOCAL-00002" />
+      <option name="project" value="LOCAL" />
+      <updated>1689101985669</updated>
+    </task>
+    <task id="LOCAL-00003" summary="basic visibility">
+      <option name="closed" value="true" />
+      <created>1689709823940</created>
+      <option name="number" value="00003" />
+      <option name="presentableId" value="LOCAL-00003" />
+      <option name="project" value="LOCAL" />
+      <updated>1689709823940</updated>
+    </task>
+    <task id="LOCAL-00004" summary="enhanced visibility + updated gui">
+      <option name="closed" value="true" />
+      <created>1690856663393</created>
+      <option name="number" value="00004" />
+      <option name="presentableId" value="LOCAL-00004" />
+      <option name="project" value="LOCAL" />
+      <updated>1690856663393</updated>
+    </task>
+    <option name="localTasksCounter" value="5" />
+    <servers />
+  </component>
+  <component name="TypeScriptGeneratedFilesManager">
+    <option name="version" value="3" />
+  </component>
+  <component name="Vcs.Log.Tabs.Properties">
+    <option name="TAB_STATES">
+      <map>
+        <entry key="MAIN">
+          <value>
+            <State>
+              <option name="FILTERS">
+                <map>
+                  <entry key="branch">
+                    <value>
+                      <list>
+                        <option value="main" />
+                      </list>
+                    </value>
+                  </entry>
+                </map>
+              </option>
+            </State>
+          </value>
+        </entry>
+      </map>
+    </option>
+  </component>
+  <component name="VcsManagerConfiguration">
+    <MESSAGE value="default commit" />
+    <MESSAGE value="massive update / commit" />
+    <MESSAGE value="basic visibility" />
+    <MESSAGE value="enhanced visibility + updated gui" />
+    <option name="LAST_COMMIT_MESSAGE" value="enhanced visibility + updated gui" />
+  </component>
+</project>
