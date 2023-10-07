@@ -1,19 +1,20 @@
-import math
 import os, json
-# from utils_features.featureProcessing import process_audio_file
-# from featureJson import create_results_json
+import time
+
 import essentia.standard as esstd
 import numpy as np
 import essentia
 from paths.pathsToFolders import dir_path, json_dir, model_path
 from utils.tempo_ranges import tempo_ranges
-
+from utils.sector_labels import sector_labels
+from utils.sector_colors import sector_colors
 from flask import Flask
 
 app = Flask(__name__)
 
 all_results = []
 pool = essentia.Pool()
+
 
 classes_embedding_model = esstd.TensorflowPredictEffnetDiscogs(graphFilename=os.path.join(model_path, "discogs-effnet-bs64-1.pb"), output="PartitionedCall:1")
 mood_embedding_model = esstd.TensorflowPredictEffnetDiscogs(graphFilename=os.path.join(model_path, "discogs_artist_embeddings-effnet-bs64-1.pb"), output="PartitionedCall:1")
@@ -38,7 +39,23 @@ with open(os.path.join(model_path, 'mtg_jamendo_instrument-effnet-discogs_artist
                 metadata = json.load(json_file)
 instrument_labels = metadata['classes']
 
+# valence / arousal
+va_embedding_model = esstd.TensorflowPredictMusiCNN(graphFilename=os.path.join(model_path, "msd-musicnn-1.pb"), output="model/dense/BiasAdd")
 
+va_model = esstd.TensorflowPredict2D(graphFilename=os.path.join(model_path, "emomusic-msd-musicnn-2.pb"), output="model/Identity")
+
+# engagement and approachability
+approachability_model = esstd.TensorflowPredict2D(graphFilename=os.path.join(model_path, "approachability_3c-discogs-effnet-1.pb"), output="model/Softmax")
+
+with open(os.path.join(model_path, 'approachability.json'), 'r') as json_file:
+    metadata = json.load(json_file)
+approachability_labels = metadata['classes']
+
+engagement_model = esstd.TensorflowPredict2D(graphFilename=os.path.join(model_path, "engagement_3c-discogs-effnet-1.pb"), output="model/Softmax")
+
+with open(os.path.join(model_path, 'engagement.json'), 'r') as json_file:
+    metadata = json.load(json_file)
+engagement_labels = metadata['classes']
 
 print("MODEL LOADED")
 
@@ -51,17 +68,11 @@ def load_audio(file_path):
     return audio
 
 
-def predict_label(predictions, class_labels):
+def predict_label_from_classes(predictions, class_labels):
     """
     Predict the primary label(s) present in the audio file.
     Returns the predicted label(s).
     """
-    # Extract embeddings using the embedding model
-    """embeddings = embedding_model(audio)
-
-    # Predict labels using the classification model
-    predictions = classification_model(embeddings)"""
-
     # Extract the tags from the predictions
     tags = predictions[0][:len(class_labels)]
 
@@ -78,9 +89,43 @@ def assign_tempo_label(bpm):
             return label
     return 'unknown'
 
+# from valence/arousal to color and relative emotion
+def get_sector_color_label(valence, arousal, threshold):
+    # Calculate the polar coordinates of the point
+    theta = np.arctan2(valence, arousal)
+
+    # Shift the angle to fall within the range [0, 2*pi)
+    if theta < 0:
+        theta += 2 * np.pi
+
+    # If the distance is below the threshold, return 'neutral' color and label
+    if abs(valence) < threshold and abs(arousal) < threshold:
+        return 'white', 'neutral'
+
+    # Define the number of sectors
+    num_sectors = 16
+
+    # Define the sector angles
+    sector_angles = 2 * np.pi / num_sectors
+
+    # Find the sector that the point falls into
+    sector_index = int(np.floor(theta / sector_angles))
+
+    # Get the color and label of the sector
+    sector_color = sector_colors[sector_index]
+    sector_label = sector_labels[sector_index]
+
+    return sector_color, sector_label
+
+# constants
+THRESHOLD = 0.2
+
+
+
 @app.route("/process_audio")
 def process_audio():
     print("START")
+    start_time = time.time()
 
     for root, dirs, files in os.walk(dir_path):
         for file_name in files:
@@ -99,8 +144,18 @@ def process_audio():
                 tempo_label = assign_tempo_label(bpm)
 
                 # key
-                key_extractor = esstd.KeyExtractor(profileType = 'Krumhansl')
-                key, scale, key_strength = key_extractor(audio)
+                key_extractor = esstd.KeyExtractor(profileType = 'krumhansl')
+                key, scale, key_strength_raw = key_extractor(audio)
+                key_strength = round(key_strength_raw   , 3)
+
+                # danceability
+                danceability_raw, _ = esstd.Danceability()(audio)
+                danceability = round(danceability_raw * 100 / 3, 3)
+
+                # dynamic complexity & global loudness
+                dynamic_complexity, global_loudness_raw = esstd.DynamicComplexity()(audio)
+                normalized_dynamic_complexity = round(dynamic_complexity / abs(global_loudness_raw), 3)
+                global_loudness = round(global_loudness_raw, 3)
 
                 # embeddings
                 classes_embeddings = classes_embedding_model(audio)
@@ -108,15 +163,47 @@ def process_audio():
 
                 # timbre
                 timbre_predictions = timbre_model(classes_embeddings)
-                timbre_predicted_label = predict_label(timbre_predictions, timbre_labels)
+                timbre_predicted_label = predict_label_from_classes(timbre_predictions, timbre_labels)
 
                 # mood
                 mood_predictions = mood_model(mood_embeddings)
-                mood_predicted_label = predict_label(mood_predictions, mood_labels)
+                mood_predicted_label = predict_label_from_classes(mood_predictions, mood_labels)
 
                 # instrument - to review
                 instrument_predictions = instrument_model(classes_embeddings)
-                instrument_predicted_label = predict_label(instrument_predictions, instrument_labels)
+                instrument_predicted_label = predict_label_from_classes(instrument_predictions, instrument_labels)
+
+                # valence & arousal
+                va_embeddings = va_embedding_model(audio)
+                va_predictions = va_model(va_embeddings)
+                va_predictions = np.mean(va_predictions.squeeze(), axis=0)
+                va_predictions = (va_predictions - 5) / 4
+                valence = va_predictions[0]
+                valence = float(valence)
+                arousal = va_predictions[1]
+                arousal = float(arousal)
+
+                # color and relative emotion label
+                color, emotion = get_sector_color_label(valence, arousal, threshold=THRESHOLD)
+
+                for frame in esstd.FrameGenerator(audio, frameSize=2048, hopSize=1024):
+                    # Perform frame-specific processing
+                    frame_spectrum = esstd.Spectrum()(frame)
+
+                    f, m = esstd.SpectralPeaks(magnitudeThreshold=0.01, minFrequency=10)(frame_spectrum)
+
+                    # Calculate inharmonicity (sample rate inferred from audio)
+                    inharmonicity = esstd.Inharmonicity()(f, m)
+
+                harmonicity_pct = (1 - inharmonicity) * 100
+
+                # approachability
+                approach_predictions = approachability_model(classes_embeddings)
+                engagement_predictions = engagement_model(classes_embeddings)
+                approachability = predict_label_from_classes(approach_predictions, approachability_labels)
+                engagement = predict_label_from_classes(engagement_predictions, engagement_labels)
+                print(approachability, engagement)
+
 
                 # esstd.YamlOutput(filename='file_info', format='json')(pool)
 
@@ -130,21 +217,26 @@ def process_audio():
                     "key_strength": key_strength,
                     "mood": mood_predicted_label,
                     "tempo": tempo_label,
-                    # "danceability": 75,
-                    # "dynamic_complexity_norm": round(normalized_dynamic_complexity, 3),
-                    # "global_loudness_dB": round(global_loudness, 1),
-                    # "valence": valence,
-                    # "arousal": arousal,
-                    # "color": color,
-                    # "emotion": emotion,
+                    "danceability": danceability,
+                    "dynamic_complexity_norm": normalized_dynamic_complexity,
+                    "global_loudness_dB": global_loudness,
+                    "valence": valence,
+                    "arousal": arousal,
+                    "color": color,
+                    "emotion": emotion,
                     "timbre": timbre_predicted_label,
                     "instrument": instrument_predicted_label,
+                    "approachability": approachability,
+                    "engagement": engagement,
                     # "pitch": pitch,
                     # "pitch confidence": pitch_confidence_pct,
-                    # "harmonicity %": harmonicity_pct
+                    "harmonicity %": harmonicity_pct
                 }
                 all_results.append(results)
     print("END")
+    end_time = time.time()
+    elapsed_time = end_time - start_time
+    print(f"File processing time: {elapsed_time} seconds")
     return {"results": all_results}
 
 
