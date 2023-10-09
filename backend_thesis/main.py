@@ -12,7 +12,7 @@ from flask import Flask
 app = Flask(__name__)
 
 all_results = []
-pool = essentia.Pool()
+# pool = essentia.Pool()
 
 
 classes_embedding_model = esstd.TensorflowPredictEffnetDiscogs(graphFilename=os.path.join(model_path, "discogs-effnet-bs64-1.pb"), output="PartitionedCall:1")
@@ -153,7 +153,7 @@ def process_audio():
                 # compute beat positions and BPM.
                 rhythm_extractor = esstd.RhythmExtractor2013(method="degara")
                 bpm, beats, beats_confidence, _, beats_intervals = rhythm_extractor(audio)
-                pool.add('bpm', bpm)
+                # pool.add('bpm', bpm)
 
                 # tempo label
                 tempo_label = assign_tempo_label(bpm)
@@ -222,6 +222,10 @@ def process_audio():
                 end_time = time.time()
                 elapsed_time = end_time - start_time
                 print(f"File processing time: {elapsed_time} seconds")
+
+
+
+                # updating already analyzed files
 
                 # Save the analyzed file name to the list or set
                 analyzed_files.add(file_name)
