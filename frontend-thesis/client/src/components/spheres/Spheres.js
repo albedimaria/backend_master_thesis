@@ -1,5 +1,5 @@
 import * as THREE from 'three';
-import { useEffect, useMemo, useRef } from "react";
+import {useCallback, useEffect, useMemo, useRef, useState} from "react";
 import React from "react";
 import { useNumSpheres } from "../../contexts/basicSphereProperties/numSpheresContext/NumSpheresContext";
 import { useOptions } from "../../contexts/levaControls/axisControls/OptionsContext";
@@ -9,19 +9,11 @@ import SphereDataGenerator from "./SphereDataGenerator";
 import CalculatePosition from "./CalculatePosition";
 import { useVisibility } from "../../utils/VisibilityFunction";
 import LabelsState from "../../contexts/labelsContext/LabelsState";
-
-
-/*try {
-    importScripts('https://cdn.jsdelivr.net/npm/essentia.js@0.1.3/dist/essentia-wasm.web.js',
-        'https://cdn.jsdelivr.net/npm/essentia.js@0.1.3/dist/essentia.js-*.js')
-}   catch (e) {
-    console.error(e.message);
-}*/
-
+import {useColorsDropbox} from "../../contexts/levaControls/colorDropbox/LevaColorDropboxContext";
 
 function SpheresStart() {
 
-    const { numSpheres, sphereSize, sphereSegments } = useNumSpheres();         // SPHERES BASIC CONTROLS
+    const { numSpheres, sphereSize, setSphereSize, sphereSegments, setSphereSegments } = useNumSpheres();         // SPHERES BASIC CONTROLS
     const { selectedOptionX, selectedOptionY, selectedOptionZ} = useOptions()    // AXIS CHOICE
 
     // ARRAY OF PROPS
@@ -55,7 +47,10 @@ function SpheresStart() {
         showSelected
     } = useSliders()
 
+
     const visibility = useVisibility();
+
+    const { colors } = useColorsDropbox()
 
 /*    function hashCode(str) { // java String#hashCode
         let hash = 0;
@@ -86,12 +81,12 @@ function SpheresStart() {
    */
 
     // COLORS
-    const colors = useMemo(() => {
+    /*const colors = useMemo(() => {
         return Array.from({length: numSpheres}, (_, instanceId) => {
             const color = new THREE.Color().setHSL(instanceId / numSpheres, 1, 0.5);
             return color;
         });
-    }, [numSpheres]);
+    }, [numSpheres]);*/
 
 
 /*    const onPointerOver = (e) => {
@@ -168,16 +163,6 @@ function SpheresStart() {
         // console.log("Instance ID:", e.instanceId);
     }
 
-
-/*    let esPkg = require('essentia.js');
-
-    const essentia = new esPkg.Essentia(esPkg.EssentiaWASM);
-
-    // prints version of the essentia wasm backend
-    console.log(essentia.version)
-
-    // prints all the available algorithm methods in Essentia
-    console.log(essentia.algorithmNames)*/
 
     return (
         <>

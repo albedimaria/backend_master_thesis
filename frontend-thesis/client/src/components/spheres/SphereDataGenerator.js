@@ -18,9 +18,9 @@ function SphereDataGenerator() {
             mood: sphere.mood,
             texture: 1,
             instrument: sphere.instrument,
-            key: sphere.key.estimated_key, // TRY IT BEFORE
+            key: "F",
             index: instanceId,
-            name: sphere.name.toLowerCase(),
+            name: sphere.file_name,
             color: sphere.color,
         }));
     }, [data]);
