@@ -1,8 +1,6 @@
 import { useMemo } from 'react';
 import {useData} from "../../contexts/DataContext";
-import getNameToShow from "../../contexts/labelsContext/ChangingNameFunction";
-import {getLabelContent} from "../labels/LabelsFromAxisFunction";
-import {useOptions} from "../../contexts/levaControls/axisControls/OptionsContext";
+
 
 
 function SphereDataGenerator() {
@@ -18,7 +16,7 @@ function SphereDataGenerator() {
             mood: sphere.mood,
             texture: 1,
             instrument: sphere.instrument,
-            key: "F",
+            key: sphere.key,
             index: instanceId,
             name: sphere.file_name,
             color: sphere.color,

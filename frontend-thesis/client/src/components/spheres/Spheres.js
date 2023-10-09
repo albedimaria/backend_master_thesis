@@ -50,35 +50,9 @@ function SpheresStart() {
 
     const visibility = useVisibility();
 
-    const { colors } = useColorsDropbox()
+    const { colors, selectedFeature } = useColorsDropbox()
 
-/*    function hashCode(str) { // java String#hashCode
-        let hash = 0;
-        for (let i = 0; i < str.length; i++) {
-            hash = str.charCodeAt(i) + ((hash << 5) - hash);
-        }
-        return hash;
-    }
 
-    function intToRGB(i){
-        var c = (i & 0x00FFFFFF)
-            .toString(16)
-            .toUpperCase();
-
-        return "00000".substring(0, 6 - c.length) + c;
-    }*/
-
-    /*  COLORS
-   const colors = [];
-
-   sphereData.forEach((sphere) => {
-       const color = sphere.color;
-       colors.push(color);
-   });
-
-   console.log(colors);
-
-   */
 
     // COLORS
     /*const colors = useMemo(() => {
@@ -145,10 +119,13 @@ function SpheresStart() {
             // console.log(sphereData[instanceId].color)
         }
         meshRef.current.instanceMatrix.needsUpdate = true;
+        meshRef.current.instanceColor.needsUpdate = true;
+
 
 
         // Update instanceMatrix and instanceColor as needed
-    }, [numSpheres, selectedOptionX, selectedOptionY, selectedOptionZ, sphereData, bpmSelectedLow, bpmSelectedHigh, textureSelectedLow, textureSelectedHigh, danceabilitySelectedLow, danceabilitySelectedHigh, moodSelected, keySelected, instrumentSelected, textSelected]);
+    }, [numSpheres, selectedOptionX, selectedOptionY, selectedOptionZ, sphereData, selectedFeature,
+        bpmSelectedLow, bpmSelectedHigh, textureSelectedLow, textureSelectedHigh, danceabilitySelectedLow, danceabilitySelectedHigh, moodSelected, keySelected, instrumentSelected, textSelected]);
 
 
 

@@ -19,7 +19,7 @@ function CalculatePosition({
         (instanceId) => {
             const optionCalculations = {
 
-                BPM: (i) => sphereData[i].bpm / 5,
+                BPM: (i) => sphereData[i].bpm / 3 - 20 / 3,
                 Texture: (i) => sphereData[i].texture * 5,
                 Danceability: (i) => sphereData[i].danceability / 2.5,
                 Mood: (i) => labelIndexFinder(moodClassesAvailable, sphereData[i].mood) / 4,

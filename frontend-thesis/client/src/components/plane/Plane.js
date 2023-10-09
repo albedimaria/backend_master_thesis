@@ -27,7 +27,7 @@ function PlaneStart() {
 
     // const { numSpheres } = useNumSpheres()
 
-    const scalingFactor = { x: 45, y: heightPlane / 2, z: 25 };
+    const scalingFactor = { x: 60, y: heightPlane / 2, z: 25 };
 
     /*
     PRACTICE

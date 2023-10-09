@@ -1,8 +1,10 @@
-import React, {createContext, useMemo, useState} from "react";
+import React, {createContext, useEffect, useMemo, useState} from "react";
 import { folder, useControls } from "leva";
 import {useLabels} from "../../labelsContext/LabelsContext";
 import * as THREE from "three";
 import {useNumSpheres} from "../../basicSphereProperties/numSpheresContext/NumSpheresContext";
+import SphereDataGenerator from "../../../components/spheres/SphereDataGenerator";
+import {colorToHex} from "./ColorToHex";
 
 
 const LevaColorDropboxContext = createContext()
@@ -21,7 +23,7 @@ export const LevaColorDropboxProvider = ({ children }) => {
     } = useLabels();
 
     const {numSpheres} = useNumSpheres()
-    console.log(numSpheres)
+    const sphereData = SphereDataGenerator()
 
     const [selectedFeature, setSelectedFeature] = useState(Mood_label); // You can set the initial feature as per your preference
 
@@ -30,24 +32,37 @@ export const LevaColorDropboxProvider = ({ children }) => {
 
     }
 
-    // COLORS
+// COLORS
     const colors = useMemo(() => {
-        return Array.from({length: numSpheres}, (_, instanceId) => {
-            const color = new THREE.Color().setHSL(instanceId / numSpheres, 1, 0.5);
-            return color;
+        return Array.from({ length: numSpheres }, (_, instanceId) => {
+            if (selectedFeature === Mood_label) {
+                const colorFromSphere = sphereData[instanceId].color; // Assuming it's a valid color string
+
+                // Convert the color string to HSL
+                const hexColor = colorToHex(colorFromSphere);
+
+                // Create a THREE.Color object from the hex color
+                const colorFromMood = new THREE.Color(hexColor);
+                return colorFromMood;
+            }
+            if (selectedFeature === "Index") {
+                const colorFromIndex = new THREE.Color().setHSL(instanceId / numSpheres, 1, 0.5);
+                return colorFromIndex;
+            }
         });
-    }, [numSpheres]);
-    console.log(colors)
+    }, [numSpheres, selectedFeature]);
+
+
 
     const  [selectionForColor, set] = useControls('Color Control', () => ({
 
         'color to feature': folder({
             featureSelection: {
-                value: selectedFeature, // Initialize with the selectedFeature state
-                options: [BPM_label, Mood_label, Danceability_label], // Add your feature options here
+                value: selectedFeature,
+                options: [BPM_label, Mood_label, Danceability_label, "Index"],
                 label:  <span>select<br />feature</span>,
                 onChange: (newValue) => {
-                    setSelectedFeature(newValue); // Update the selectedFeature state when the dropdown changes
+                    setSelectedFeature(newValue);
                 },
             },
 
@@ -63,7 +78,7 @@ export const LevaColorDropboxProvider = ({ children }) => {
 
 
     return(
-        <LevaColorDropboxContext.Provider value={{colors}} >
+        <LevaColorDropboxContext.Provider value={{colors, selectedFeature}} >
             {children}
         </LevaColorDropboxContext.Provider>
     )
