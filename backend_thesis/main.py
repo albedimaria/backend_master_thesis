@@ -1,6 +1,5 @@
 import os, json
 import time
-
 import essentia.standard as esstd
 import numpy as np
 import essentia
@@ -125,12 +124,28 @@ THRESHOLD = 0.2
 @app.route("/process_audio")
 def process_audio():
     print("START")
-    start_time = time.time()
+
+    # Initialize a list or set to store the names of analyzed files
+    analyzed_files = set()
+
+    # Check if the JSON file with analyzed file names exists
+    analyzed_files_json_path = os.path.join(json_dir, 'analyzed_files.json')
+    if os.path.exists(analyzed_files_json_path):
+        with open(analyzed_files_json_path, 'r') as analyzed_file:
+            analyzed_files = set(json.load(analyzed_file))
 
     for root, dirs, files in os.walk(dir_path):
         for file_name in files:
             if file_name.lower().endswith('.mp3') or file_name.lower().endswith('.wav'):
                 file_path = os.path.join(root, file_name)
+
+                # Check if the file has already been analyzed
+                if file_name in analyzed_files:
+                    print("Skipping file (already analyzed):", file_path)
+                    continue
+
+                start_time = time.time()
+
                 print("Loading file:", file_path)
 
                 audio = load_audio(file_path)
@@ -197,13 +212,23 @@ def process_audio():
 
                 harmonicity_pct = (1 - inharmonicity) * 100
 
-                # approachability
+                # approachability & engagement
                 approach_predictions = approachability_model(classes_embeddings)
                 engagement_predictions = engagement_model(classes_embeddings)
                 approachability = predict_label_from_classes(approach_predictions, approachability_labels)
                 engagement = predict_label_from_classes(engagement_predictions, engagement_labels)
-                print(approachability, engagement)
 
+                # time for each file
+                end_time = time.time()
+                elapsed_time = end_time - start_time
+                print(f"File processing time: {elapsed_time} seconds")
+
+                # Save the analyzed file name to the list or set
+                analyzed_files.add(file_name)
+
+                # Save the updated list or set to the JSON file
+                with open(analyzed_files_json_path, 'w') as analyzed_file:
+                    json.dump(list(analyzed_files), analyzed_file)
 
                 # esstd.YamlOutput(filename='file_info', format='json')(pool)
 
@@ -234,10 +259,12 @@ def process_audio():
                 }
                 all_results.append(results)
     print("END")
-    end_time = time.time()
-    elapsed_time = end_time - start_time
-    print(f"File processing time: {elapsed_time} seconds")
-    return {"results": all_results}
+
+    # At the end of your process_audio function, save all_results as a JSON file
+    with open(os.path.join(json_dir, 'backend_analysis.json'), 'w') as json_file:
+        json.dump(all_results, json_file)
+
+    return {"my results": all_results}
 
 
 if __name__ == "__main__":
