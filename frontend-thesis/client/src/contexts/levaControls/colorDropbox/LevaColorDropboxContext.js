@@ -5,6 +5,9 @@ import * as THREE from "three";
 import {useNumSpheres} from "../../basicSphereProperties/numSpheresContext/NumSpheresContext";
 import SphereDataGenerator from "../../../components/spheres/SphereDataGenerator";
 import {colorToHex} from "./ColorToHex";
+import {labelIndexFinder} from "../../labelsContext/LabelsIndexFinder";
+import LabelsDataExtractor from "../../labelsContext/LabelDataExtractor";
+import {useData} from "../../DataContext";
 
 
 const LevaColorDropboxContext = createContext()
@@ -21,6 +24,10 @@ export const LevaColorDropboxProvider = ({ children }) => {
         KeyChoicesLabels,
         InstrumentChoicesLabels,
     } = useLabels();
+
+    const {data, explanation} = useData()
+    const { moodClassesAvailable, instrumentClassesAvailable, keyClassesAvailable } =
+        LabelsDataExtractor({ explanation });
 
     const {numSpheres} = useNumSpheres()
     const sphereData = SphereDataGenerator()
@@ -45,10 +52,37 @@ export const LevaColorDropboxProvider = ({ children }) => {
                 const colorFromMood = new THREE.Color(hexColor);
                 return colorFromMood;
             }
-            if (selectedFeature === "Index") {
-                const colorFromIndex = new THREE.Color().setHSL(instanceId / numSpheres, 1, 0.5);
-                return colorFromIndex;
+
+            if(selectedFeature === Instrument_label){
+                const fromInstrument = labelIndexFinder(instrumentClassesAvailable, sphereData[instanceId].instrument)
+                const colorFromInstrument = new THREE.Color().setHSL(fromInstrument / instrumentClassesAvailable.length, 1, 0.5);
+                return colorFromInstrument;
             }
+
+            if(selectedFeature === Key_label){
+                const fromLabel = labelIndexFinder(keyClassesAvailable, sphereData[instanceId].key)
+                const colorFromKey = new THREE.Color().setHSL(fromLabel / keyClassesAvailable.length, 1, 0.5);
+                return colorFromKey;
+            }
+
+            if(selectedFeature === BPM_label){
+                const MAX_BPM = 200
+                const fromBPM = sphereData[instanceId].bpm;
+                const colorFromBPM = new THREE.Color().setHSL(fromBPM / MAX_BPM, 1, 0.5);
+                return colorFromBPM;
+            }
+
+            if(selectedFeature === Danceability_label){
+                const MAX_DANCEABILITY = 100
+                const fromDanceability = sphereData[instanceId].danceability;
+                const colorFromDanceability = new THREE.Color().setHSL(fromDanceability / MAX_DANCEABILITY, 1, 0.5);
+                return colorFromDanceability;
+            }
+
+            /* if (selectedFeature === "Index") {
+              const colorFromIndex = new THREE.Color().setHSL(instanceId / numSpheres, 1, 0.5);
+              return colorFromIndex;
+          }*/
         });
     }, [numSpheres, selectedFeature]);
 
@@ -59,7 +93,7 @@ export const LevaColorDropboxProvider = ({ children }) => {
         'color to feature': folder({
             featureSelection: {
                 value: selectedFeature,
-                options: [BPM_label, Mood_label, Danceability_label, "Index"],
+                options: [BPM_label, Mood_label, Danceability_label, Instrument_label, Key_label],
                 label:  <span>select<br />feature</span>,
                 onChange: (newValue) => {
                     setSelectedFeature(newValue);
