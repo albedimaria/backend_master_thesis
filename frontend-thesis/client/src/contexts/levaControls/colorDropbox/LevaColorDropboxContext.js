@@ -34,12 +34,8 @@ export const LevaColorDropboxProvider = ({ children }) => {
 
     const [selectedFeature, setSelectedFeature] = useState(Mood_label); // You can set the initial feature as per your preference
 
-    const calculateSphereColor  = (selectedFeature) => {
-        return console.log(selectedFeature)
 
-    }
-
-// COLORS
+    // COLORS
     const colors = useMemo(() => {
         return Array.from({ length: numSpheres }, (_, instanceId) => {
             if (selectedFeature === Mood_label) {
@@ -78,6 +74,8 @@ export const LevaColorDropboxProvider = ({ children }) => {
                 const colorFromDanceability = new THREE.Color().setHSL(fromDanceability / MAX_DANCEABILITY, 1, 0.5);
                 return colorFromDanceability;
             }
+
+            // TEXTURE WILL BE ADDED AFTER
 
             /* if (selectedFeature === "Index") {
               const colorFromIndex = new THREE.Color().setHSL(instanceId / numSpheres, 1, 0.5);

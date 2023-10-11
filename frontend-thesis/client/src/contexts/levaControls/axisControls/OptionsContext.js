@@ -19,19 +19,19 @@ export const OptionsProvider = ({ children }) => {
 
         return {
             xAxis: {
-                options: optionsX,
+                options: ['remove axis', ...optionsX], // adding the new option to the previous
                 value: selectedOptionX,
                 onChange: (value) => setSelectedOptionX(value),
                 label: 'x axis',
             },
             yAxis: {
-                options: optionsY,
+                options: ['remove axis', ...optionsY],
                 value: selectedOptionY,
                 onChange: (value) => setSelectedOptionY(value),
                 label: 'y axis',
             },
             zAxis: {
-                options: optionsZ,
+                options: ['remove axis', ...optionsZ],
                 value: selectedOptionZ,
                 onChange: (value) => setSelectedOptionZ(value),
                 label: 'z axis',

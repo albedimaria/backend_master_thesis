@@ -109,15 +109,15 @@ function PlaneStart() {
             <axesHelper scale={[scalingFactor.x, scalingFactor.x / 3, scalingFactor.z]} position={[0, 0, -scalingFactor.z / 2]} />
 
             <group>
-                <Html position={[- 2, 0, 0]} wrapperClass="label" center distanceFactor={18} occlude={[planeRef, axisRefs.current[0]]}            >
+                <Html position={[- 2, 0, 0]} wrapperClass="label" center distanceFactor={30} occlude={[planeRef, axisRefs.current[0]]}            >
                     { getLabelZ() }
                 </Html>
 
-                <Html position={[0, scalingFactor.x / 2.7, -scalingFactor.z / 2]} wrapperClass="label" center distanceFactor={18} occlude={[planeRef, axisRefs.current[1]]}>
+                <Html position={[0, scalingFactor.x / 2.7, -scalingFactor.z / 2]} wrapperClass="label" center distanceFactor={30} occlude={[planeRef, axisRefs.current[1]]}>
                     { getLabelY() }
                 </Html>
 
-                <Html position={[scalingFactor.x / 2, -1, scalingFactor.x / 4 -2]} wrapperClass="label" center distanceFactor={18} occlude={[planeRef, axisRefs.current[2]]}>
+                <Html position={[scalingFactor.x / 2, -1, scalingFactor.x / 4 -2]} wrapperClass="label" center distanceFactor={30} occlude={[planeRef, axisRefs.current[2]]}>
                     { getLabelX() }
                 </Html>
             </group>
