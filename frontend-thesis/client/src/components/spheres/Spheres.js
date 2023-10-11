@@ -73,6 +73,31 @@ function SpheresStart() {
         // console.log("Instance ID:", e.instanceId);
     }*/
 
+    const [scaleFactor, setScaleFactor] = useState(new Array(numSpheres).fill(1)); // Initialize with 1 (normal scale) for all spheres
+
+    const onPointerOver = (e) => {
+        const { instanceId } = e;
+        const updatedScaleFactors = [...scaleFactor];
+        updatedScaleFactors[instanceId] = 1.5; // Increase scale for the hovered sphere
+        setScaleFactor(updatedScaleFactors);
+
+        setLabelVisibility((prevLabelVisibility) => {
+            prevLabelVisibility[e.instanceId] = !prevLabelVisibility[e.instanceId];
+            // console.log(`Label visibility for Instance ID ${e.instanceId} toggled to ${prevLabelVisibility[e.instanceId]}`);
+            return [...prevLabelVisibility];
+        });
+    }
+
+    const onPointerOut = (e) => {
+        setScaleFactor(new Array(numSpheres).fill(1)); // Reset scale for all spheres when not hovered
+        setLabelVisibility((prevLabelVisibility) => {
+            prevLabelVisibility[e.instanceId] = !prevLabelVisibility[e.instanceId];
+            // console.log(`Label visibility for Instance ID ${e.instanceId} toggled to ${prevLabelVisibility[e.instanceId]}`);
+            return [...prevLabelVisibility];
+        });
+    }
+
+
     // SPHERES RENDERING
     useEffect(() => {
         for (let instanceId = 0; instanceId < numSpheres; instanceId++) {
@@ -102,10 +127,9 @@ function SpheresStart() {
                 });
             }
 
-
             const [positionX, positionY, positionZ] = calculatePosition(instanceId);
             const matrix = new THREE.Matrix4();
-            const scale_for_visibility = isVisible ? 1 : 0;
+            const scale_for_visibility = isVisible ? scaleFactor[instanceId] : 0;
 
             matrix.compose(
                 new THREE.Vector3(positionX, positionY, positionZ),
@@ -124,14 +148,16 @@ function SpheresStart() {
 
 
         // Update instanceMatrix and instanceColor as needed
-    }, [numSpheres, selectedOptionX, selectedOptionY, selectedOptionZ, sphereData, selectedFeature,
+    }, [numSpheres, scaleFactor, selectedOptionX, selectedOptionY, selectedOptionZ, sphereData, selectedFeature,
         bpmSelectedLow, bpmSelectedHigh, textureSelectedLow, textureSelectedHigh, danceabilitySelectedLow, danceabilitySelectedHigh, moodSelected, keySelected, instrumentSelected, textSelected]);
+
 
 
 
 
     const clickHandle = (e) => {
         e.stopPropagation();
+
         setLabelVisibility((prevLabelVisibility) => {
             prevLabelVisibility[e.instanceId] = !prevLabelVisibility[e.instanceId];
             // console.log(`Label visibility for Instance ID ${e.instanceId} toggled to ${prevLabelVisibility[e.instanceId]}`);
@@ -148,7 +174,8 @@ function SpheresStart() {
                 args={[ null, null, numSpheres ]}
                 geometry={ sphereGeometry }
                 onClick={ clickHandle }
-                // onPointerOver={ onPointerOver }
+                onPointerOver={ onPointerOver }
+                onPointerOut = { onPointerOut }
             >
                 <meshStandardMaterial/>
                 <SphereLabels
