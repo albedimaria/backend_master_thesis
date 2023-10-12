@@ -39,7 +39,8 @@ root.render(
                         fov: 75,
                         near: 0.1,
                         far: 200,
-                        position: [20, 30, 30],
+                        position: [30, 30, 30],
+                        // update experience too
                     }}
                 >
                     <Suspense fallback={null}>

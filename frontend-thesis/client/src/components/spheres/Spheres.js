@@ -10,6 +10,7 @@ import CalculatePosition from "./CalculatePosition";
 import { useVisibility } from "../../utils/VisibilityFunction";
 import LabelsState from "../../contexts/labelsContext/LabelsState";
 import {useColorsDropbox} from "../../contexts/levaControls/colorDropbox/LevaColorDropboxContext";
+import {clickHandle, onPointerOver} from "../../utils/MouseEvents";
 
 function SpheresStart() {
 
@@ -75,27 +76,7 @@ function SpheresStart() {
 
     const [scaleFactor, setScaleFactor] = useState(new Array(numSpheres).fill(1)); // Initialize with 1 (normal scale) for all spheres
 
-    const onPointerOver = (e) => {
-        const { instanceId } = e;
-        const updatedScaleFactors = [...scaleFactor];
-        updatedScaleFactors[instanceId] = 1.5; // Increase scale for the hovered sphere
-        setScaleFactor(updatedScaleFactors);
 
-        setLabelVisibility((prevLabelVisibility) => {
-            prevLabelVisibility[e.instanceId] = !prevLabelVisibility[e.instanceId];
-            // console.log(`Label visibility for Instance ID ${e.instanceId} toggled to ${prevLabelVisibility[e.instanceId]}`);
-            return [...prevLabelVisibility];
-        });
-    }
-
-    const onPointerOut = (e) => {
-        setScaleFactor(new Array(numSpheres).fill(1)); // Reset scale for all spheres when not hovered
-        setLabelVisibility((prevLabelVisibility) => {
-            prevLabelVisibility[e.instanceId] = !prevLabelVisibility[e.instanceId];
-            // console.log(`Label visibility for Instance ID ${e.instanceId} toggled to ${prevLabelVisibility[e.instanceId]}`);
-            return [...prevLabelVisibility];
-        });
-    }
 
 
     // SPHERES RENDERING
@@ -140,7 +121,6 @@ function SpheresStart() {
             meshRef.current.setMatrixAt(instanceId, matrix);
             meshRef.current.setColorAt(instanceId, colors[instanceId]);
 
-            // console.log(sphereData[instanceId].color)
         }
         meshRef.current.instanceMatrix.needsUpdate = true;
         meshRef.current.instanceColor.needsUpdate = true;
@@ -153,18 +133,38 @@ function SpheresStart() {
 
 
 
+    // mouse events: cursor
 
-
-    const clickHandle = (e) => {
-        e.stopPropagation();
+    // pointer inside/outside the sphere
+    const onPointerOver = (e) => {
+        const { instanceId } = e;
+        const updatedScaleFactors = [...scaleFactor];
+        updatedScaleFactors[instanceId] = 1.5; // Increase scale for the hovered sphere
+        setScaleFactor(updatedScaleFactors);
 
         setLabelVisibility((prevLabelVisibility) => {
             prevLabelVisibility[e.instanceId] = !prevLabelVisibility[e.instanceId];
             // console.log(`Label visibility for Instance ID ${e.instanceId} toggled to ${prevLabelVisibility[e.instanceId]}`);
             return [...prevLabelVisibility];
         });
-        // console.log("Instance ID:", e.instanceId);
     }
+
+    const onPointerOut = (e) => {
+        setScaleFactor(new Array(numSpheres).fill(1)); // Reset scale for all spheres when not hovered
+        setLabelVisibility((prevLabelVisibility) => {
+            prevLabelVisibility[e.instanceId] = !prevLabelVisibility[e.instanceId];
+            // console.log(`Label visibility for Instance ID ${e.instanceId} toggled to ${prevLabelVisibility[e.instanceId]}`);
+            return [...prevLabelVisibility];
+        });
+    }
+
+
+    // mouse events: clicks
+    const righClickHandle = (e) => {
+        console.log("Instance ID:", e.instanceId);
+    }
+
+
 
 
     return (
@@ -173,7 +173,7 @@ function SpheresStart() {
                 ref={ meshRef }
                 args={[ null, null, numSpheres ]}
                 geometry={ sphereGeometry }
-                onClick={ clickHandle }
+                onContextMenu={ righClickHandle }
                 onPointerOver={ onPointerOver }
                 onPointerOut = { onPointerOut }
             >

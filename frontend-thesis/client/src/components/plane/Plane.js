@@ -5,6 +5,7 @@ import { useRef } from "react";
 import {useLabels} from "../../contexts/labelsContext/LabelsContext";
 import {useOptions, useOptionsX} from "../../contexts/levaControls/axisControls/OptionsContext";
 import {useNumSpheres} from "../../contexts/basicSphereProperties/numSpheresContext/NumSpheresContext";
+import {useLevaView} from "../../contexts/levaControls/viewsControls/viewsContext";
 
 
 THREE.ColorManagement.legacyMode = false
@@ -25,38 +26,11 @@ function PlaneStart() {
         Instrument_label, Mood_label, Danceability_label
     } = useLabels()
 
+    const { distanceFactor } = useLevaView()
+
     // const { numSpheres } = useNumSpheres()
 
     const scalingFactor = { x: 60, y: heightPlane / 2, z: 25 };
-
-    /*
-    PRACTICE
-
-    const leftClick = (event) =>
-    {
-        console.log('left click occurred')
-
-    }
-
-    const longLeftClick = (event) => {
-        planeRef.current.material.color.set(`hsl(${Math.random() * 360}, 100%, 75%)`)
-    }
-
-    const doubleLeftClick = (event) => {
-        // planeRef.current.material.color.set(`hsl(${Math.random() * 360}, 100%, 75%)`)
-        console.log('DOUBLE')
-    }
-
-    const onPointerOver = (event) => {
-        // planeRef.current.material.color.set(`hsl(${Math.random() * 360}, 100%, 75%)`)
-
-        console.log('crossed paths')
-    }
-
-    const onClick = (event) => {
-    }*/
-
-
 
     const getLabelText = (option) => {
         switch (option) {
@@ -87,16 +61,6 @@ function PlaneStart() {
         <>
             <group>
                 <mesh
-                    // onClick={ leftClick }
-                    // onContextMenu={ longLeftClick }
-
-                    // onDoubleClick={ doubleLeftClick }
-
-                    // HIGH CPU PERFORMANCE
-                    // onPointerEnter={ () => {document.body.style.cursor = 'pointer'} }
-                    // onPointerLeave={ () => {document.body.style.cursor = 'default'} }
-
-
                     ref={ planeRef }
                     geometry={ boxGeometry }
                     material={ boxMaterial }
@@ -109,15 +73,15 @@ function PlaneStart() {
             <axesHelper scale={[scalingFactor.x, scalingFactor.x / 3, scalingFactor.z]} position={[0, 0, -scalingFactor.z / 2]} />
 
             <group>
-                <Html position={[- 2, 0, 0]} wrapperClass="label" center distanceFactor={30} occlude={[planeRef, axisRefs.current[0]]}            >
+                <Html position={[- 2, 1, 0]} wrapperClass="label" center distanceFactor={distanceFactor} occlude={[planeRef, axisRefs.current[0]]}            >
                     { getLabelZ() }
                 </Html>
 
-                <Html position={[0, scalingFactor.x / 2.7, -scalingFactor.z / 2]} wrapperClass="label" center distanceFactor={30} occlude={[planeRef, axisRefs.current[1]]}>
+                <Html position={[0, scalingFactor.x / 2.7, -scalingFactor.z / 2]} wrapperClass="label" center distanceFactor={distanceFactor} occlude={[planeRef, axisRefs.current[1]]}>
                     { getLabelY() }
                 </Html>
 
-                <Html position={[scalingFactor.x / 2, -1, scalingFactor.x / 4 -2]} wrapperClass="label" center distanceFactor={30} occlude={[planeRef, axisRefs.current[2]]}>
+                <Html position={[scalingFactor.x / 2, -1.5, scalingFactor.x / 4 -2]} wrapperClass="label" center distanceFactor={distanceFactor} occlude={[planeRef, axisRefs.current[2]]}>
                     { getLabelX() }
                 </Html>
             </group>

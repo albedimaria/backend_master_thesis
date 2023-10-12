@@ -30,7 +30,7 @@ const SphereLabels = ({
                 positionOpt[2],
             ];*/
 
-            const positionLabels = [22.5, 25, 0]
+            const positionLabels = [30, 25, 0]
             const featureContent = (
                 <>
                     {getLabelContent(selectedOptionX, sphereData[instanceId])} <br />

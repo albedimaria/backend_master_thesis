@@ -86,7 +86,7 @@ export const LevaColorDropboxProvider = ({ children }) => {
 
 
 
-    const  [selectionForColor, set] = useControls('Color Control', () => ({
+    const  [selectionForColor, set] = useControls('color control', () => ({
 
         'color to feature': folder({
             featureSelection: {
@@ -98,7 +98,7 @@ export const LevaColorDropboxProvider = ({ children }) => {
                 },
             },
 
-        })
+        }, { collapsed: true })
 
 
     }))

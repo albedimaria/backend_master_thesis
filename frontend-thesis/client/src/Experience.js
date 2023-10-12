@@ -4,20 +4,15 @@ import LightsAndShadows from "./components/inProgress/LightsAndShadows";
 import Plane from "./components/plane/Plane.js";
 import { Physics, Debug} from "@react-three/rapier";
 import Spheres from "./components/spheres/Spheres";
-import {NumSpheresProvider} from "./contexts/basicSphereProperties/numSpheresContext/NumSpheresContext";
-import {Perf} from "r3f-perf";
-import {LabelsProvider} from "./contexts/labelsContext/LabelsContext";
-import {OptionsProvider} from "./contexts/levaControls/axisControls/OptionsContext";
-import WelcomeText from "./components/inProgress/WelcomeText";
-import Popup from "./components/inProgress/Popup";
-import {SlidersProvider} from "./contexts/levaControls/filtersControls/SlidersContext";
-import {SpherePropertiesProvider} from "./contexts/SpherePropertiesContext";
-import {ScaleLoader} from "react-spinners";
-import Dashboard from "./components/inProgress/Dashboard";
-import InfoSphere from "./components/inProgress/InfoSphere";
-import { DataProvider } from "./contexts/DataContext";
-import {BasicLevaProvider} from "./contexts/levaControls/basicSphereLeva/BasicLevaContext";
-import {LevaColorDropboxProvider} from "./contexts/levaControls/colorDropbox/LevaColorDropboxContext";
+import { NumSpheresProvider} from "./contexts/basicSphereProperties/numSpheresContext/NumSpheresContext";
+import { Perf } from "r3f-perf";
+import { LabelsProvider} from "./contexts/labelsContext/LabelsContext";
+import { OptionsProvider} from "./contexts/levaControls/axisControls/OptionsContext";
+import { SlidersProvider} from "./contexts/levaControls/filtersControls/SlidersContext";
+import {  DataProvider } from "./contexts/DataContext";
+import { BasicLevaProvider} from "./contexts/levaControls/basicSphereLeva/BasicLevaContext";
+import { LevaColorDropboxProvider} from "./contexts/levaControls/colorDropbox/LevaColorDropboxContext";
+import { ViewProvider } from "./contexts/levaControls/viewsControls/viewsContext";
 
 export default function Experience() {
 
@@ -31,9 +26,11 @@ export default function Experience() {
         }, 2000); // 3 seconds
     }, []);*/
 
+    // target is linked to index camera
+
     return (
         <>
-            <OrbitControls enableDamping={true} makeDefault={true} target={[20, 10, 0]} />
+            <OrbitControls enableDamping={true} makeDefault={true} target={[30, 10, 0]} />
             <Perf position={"top-left"} />
             <Physics>
 
@@ -45,22 +42,15 @@ export default function Experience() {
                                     <SlidersProvider>
                                         <LevaColorDropboxProvider>
                                             <OptionsProvider>
-                                                {/*
-                                            <Dashboard />
-*/}
-                                                {/*   <InfoSphere />*/}
-                                                {/*
-                                            <Popup />
-*/}
-                                                <Spheres />
-                                                <Plane />
-                                                <LightsAndShadows />
+                                                <ViewProvider>
+                                                    <Spheres />
+                                                    <Plane />
+                                                    <LightsAndShadows />
+                                                </ViewProvider>
                                             </OptionsProvider>
                                         </LevaColorDropboxProvider>
-
                                     </SlidersProvider>
                                 </BasicLevaProvider>
-
                             </LabelsProvider>
                     </NumSpheresProvider>
                 </DataProvider>
