@@ -7,7 +7,7 @@ import SphereDataGenerator from "../../../components/spheres/SphereDataGenerator
 import {colorToHex} from "./ColorToHex";
 import {labelIndexFinder} from "../../labelsContext/LabelsIndexFinder";
 import LabelsDataExtractor from "../../labelsContext/LabelDataExtractor";
-import {useData} from "../../DataContext";
+import {useData} from "../../dataFromBackend/DataContext";
 
 
 const LevaColorDropboxContext = createContext()

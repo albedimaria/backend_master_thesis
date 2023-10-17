@@ -1,6 +1,6 @@
 import { useCallback } from 'react';
 import LabelsDataExtractor from "../../contexts/labelsContext/LabelDataExtractor";
-import { useData } from "../../contexts/DataContext";
+import { useData } from "../../contexts/dataFromBackend/DataContext";
 import { labelIndexFinder } from "../../contexts/labelsContext/LabelsIndexFinder";
 
 function CalculatePosition({

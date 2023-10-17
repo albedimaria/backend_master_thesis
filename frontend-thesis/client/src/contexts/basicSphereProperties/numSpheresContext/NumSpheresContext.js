@@ -1,5 +1,5 @@
 import React, { createContext, useState } from 'react'
-import {useData} from "../../DataContext";
+import {useData} from "../../dataFromBackend/DataContext";
 import GeometrySphere from "../geometricProperties/GeometrySphere";
 
 const NumSpheresContext = createContext();

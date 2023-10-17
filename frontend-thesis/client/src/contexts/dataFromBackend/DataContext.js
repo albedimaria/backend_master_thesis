@@ -1,7 +1,7 @@
 import { createContext, useEffect, useState }  from "react";
 import React from "react"
-import data from "./backend_analysis.json"
-import explanation from "./explanation"
+import data from "../backend_analysis.json"
+import explanation from "../explanation.json"
 
 
 const DataContext = createContext()

@@ -1,5 +1,5 @@
 import ReactDOM from "react-dom/client";
-import {StrictMode, Suspense, useMemo} from "react";
+import React, {StrictMode, Suspense, useMemo} from "react";
 import {Leva} from "leva";
 import {Canvas} from "@react-three/fiber";
 import Experience from "./Experience";
@@ -7,6 +7,7 @@ import * as THREE from "three";
 import {KeyboardControls, Loader} from '@react-three/drei'
 import {loaderStyles} from "./styles/LoaderStyles";
 import Button from "./components/inProgress/Button";
+// import { backgroundStyle } from "./"
 
 
 const root = ReactDOM.createRoot(document.getElementById('root'));
@@ -14,7 +15,6 @@ const root = ReactDOM.createRoot(document.getElementById('root'));
 root.render(
 
     <>
-
 
         <StrictMode>
             <Leva />

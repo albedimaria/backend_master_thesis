@@ -9,7 +9,7 @@ import { Perf } from "r3f-perf";
 import { LabelsProvider} from "./contexts/labelsContext/LabelsContext";
 import { OptionsProvider} from "./contexts/levaControls/axisControls/OptionsContext";
 import { SlidersProvider} from "./contexts/levaControls/filtersControls/SlidersContext";
-import {  DataProvider } from "./contexts/DataContext";
+import {  DataProvider } from "./contexts/dataFromBackend/DataContext";
 import { BasicLevaProvider} from "./contexts/levaControls/basicSphereLeva/BasicLevaContext";
 import { LevaColorDropboxProvider} from "./contexts/levaControls/colorDropbox/LevaColorDropboxContext";
 import { ViewProvider } from "./contexts/levaControls/viewsControls/viewsContext";

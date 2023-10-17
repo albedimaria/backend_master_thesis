@@ -9,8 +9,8 @@ import SphereDataGenerator from "./SphereDataGenerator";
 import CalculatePosition from "./CalculatePosition";
 import { useVisibility } from "../../utils/VisibilityFunction";
 import LabelsState from "../../contexts/labelsContext/LabelsState";
-import {useColorsDropbox} from "../../contexts/levaControls/colorDropbox/LevaColorDropboxContext";
-import {clickHandle, onPointerOver} from "../../utils/MouseEvents";
+import { useColorsDropbox } from "../../contexts/levaControls/colorDropbox/LevaColorDropboxContext";
+import AudioPlayer from "../../contexts/audioContext";
 
 function SpheresStart() {
 
@@ -33,7 +33,7 @@ function SpheresStart() {
         sphereData
     });
 
-
+    // PARAMS OF FILTERS
     const {
         bpmSelectedLow,
         bpmSelectedHigh,
@@ -53,30 +53,7 @@ function SpheresStart() {
 
     const { colors, selectedFeature } = useColorsDropbox()
 
-
-
-    // COLORS
-    /*const colors = useMemo(() => {
-        return Array.from({length: numSpheres}, (_, instanceId) => {
-            const color = new THREE.Color().setHSL(instanceId / numSpheres, 1, 0.5);
-            return color;
-        });
-    }, [numSpheres]);*/
-
-
-/*    const onPointerOver = (e) => {
-        e.stopPropagation();
-        setLabelVisibility((prevLabelVisibility) => {
-            prevLabelVisibility[e.instanceId] = !prevLabelVisibility[e.instanceId];
-            // console.log(`Label visibility for Instance ID ${e.instanceId} toggled to ${prevLabelVisibility[e.instanceId]}`);
-            return [...prevLabelVisibility];
-        });
-        // console.log("Instance ID:", e.instanceId);
-    }*/
-
-    const [scaleFactor, setScaleFactor] = useState(new Array(numSpheres).fill(1)); // Initialize with 1 (normal scale) for all spheres
-
-
+    const [scaleFactor, setScaleFactor] = useState(new Array(numSpheres).fill(1));
 
 
     // SPHERES RENDERING
@@ -133,7 +110,7 @@ function SpheresStart() {
 
 
 
-    // mouse events: cursor
+    // MOUSE EVENTS: CURSOR
 
     // pointer inside/outside the sphere
     const onPointerOver = (e) => {
@@ -159,10 +136,16 @@ function SpheresStart() {
     }
 
 
-    // mouse events: clicks
+    // MOUSE EVENTS: CLICKS
+
+    // right click
     const righClickHandle = (e) => {
+        e.preventDefault(); // Prevent the default right-click context menu
         console.log("Instance ID:", e.instanceId);
+
     }
+
+    // const { audioRef, handleContextMenu } = AudioPlayer('./rnb house - 124.mp3');
 
 
 

@@ -4,11 +4,13 @@ import {DirectionalLightHelper} from "three";
 import { useFrame} from "@react-three/fiber";
 import { useKeyboardControls} from "@react-three/drei";
 import {useNumSpheres} from "../../contexts/basicSphereProperties/numSpheresContext/NumSpheresContext";
+import {useLevaView} from "../../contexts/levaControls/viewsControls/viewsContext";
 
 export default function LightsAndShadows() {
 
     const dirLight = useRef();
     const cameraRef = useRef();
+    const { distanceFactor, backColor } = useLevaView()
 
 
     const [subscribeKeys, getKeys] = useKeyboardControls()
@@ -56,9 +58,11 @@ export default function LightsAndShadows() {
 
         <ambientLight
             intensity={1}
-            /*color={'#cadcde'}            */
-
         />
+
+{/*
+        <color args={[ backColor ]} attach="background" />
+*/}
 
 
     </>

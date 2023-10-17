@@ -4,33 +4,16 @@ import {useLabels} from "../../labelsContext/LabelsContext";
 import {useNumSpheres} from "../../basicSphereProperties/numSpheresContext/NumSpheresContext";
 import SphereDataGenerator from "../../../components/spheres/SphereDataGenerator";
 import LabelsDataExtractor from "../../labelsContext/LabelDataExtractor";
-import {useData} from "../../DataContext";
+import {useData} from "../../dataFromBackend/DataContext";
 
 
 const ViewContext = createContext()
 export const ViewProvider = ({ children }) => {
 
-    const {
-        BPM_label,
-        Texture_label,
-        Mood_label,
-        Danceability_label,
-        Key_label,
-        Instrument_label,
-        MoodChoicesLabels,
-        KeyChoicesLabels,
-        InstrumentChoicesLabels,
-    } = useLabels();
-
-    const {data, explanation} = useData()
-    const { moodClassesAvailable, instrumentClassesAvailable, keyClassesAvailable } =
-        LabelsDataExtractor({ explanation });
-
-    const {numSpheres} = useNumSpheres()
-    const sphereData = SphereDataGenerator()
-
-
     const [distanceFactor, setDistanceFactor] = useState(20);
+    const [opacity, setOpacity] = useState(0.5);
+    const [backColor, setBackColor] = useState("#ff00ff");
+    const [darkMode, setDarkMode] = useState(true);
 
     const  [selectionForColor, set] = useControls('view control', () => ({
 
@@ -45,8 +28,29 @@ export const ViewProvider = ({ children }) => {
                     setDistanceFactor(newValue);
                 },
             },
+            background: {
+                value: darkMode ? 'black' : backColor,
+            },
 
-        }, { collapsed: true })
+            darkMode: {
+                value: darkMode,
+                onChange: (newValue) => {setDarkMode(newValue);}
+            },
+
+            opacity: {
+                value: opacity,
+                min: 0,
+                max: 1,
+                step: 0.01,
+                onChange: (newValue) => {
+                    setOpacity(newValue)
+                }
+            }
+
+        }, {
+            collapsed: true,
+            oneLineLabels: true
+        })
 
 
     }))
@@ -58,7 +62,7 @@ export const ViewProvider = ({ children }) => {
 
 
     return(
-        <ViewContext.Provider value={{ distanceFactor }} >
+        <ViewContext.Provider value={{ distanceFactor, backColor }} >
             {children}
         </ViewContext.Provider>
     )
@@ -67,4 +71,6 @@ export const ViewProvider = ({ children }) => {
 export function useLevaView() {
     return React.useContext(ViewContext)
 }
+
+// <color args={[ backgroundStyle ]} attach="background" />
 
