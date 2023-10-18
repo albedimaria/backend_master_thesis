@@ -7,6 +7,7 @@ import * as THREE from "three";
 import {KeyboardControls, Loader} from '@react-three/drei'
 import {loaderStyles} from "./styles/LoaderStyles";
 import Button from "./components/inProgress/Button";
+import {MyDropzone} from "./components/inProgress/Drag&Drop";
 // import { backgroundStyle } from "./"
 
 

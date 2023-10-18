@@ -13,6 +13,8 @@ import {  DataProvider } from "./contexts/dataFromBackend/DataContext";
 import { BasicLevaProvider} from "./contexts/levaControls/basicSphereLeva/BasicLevaContext";
 import { LevaColorDropboxProvider} from "./contexts/levaControls/colorDropbox/LevaColorDropboxContext";
 import { ViewProvider } from "./contexts/levaControls/viewsControls/viewsContext";
+import {MyDropzone} from "./components/inProgress/Drag&Drop";
+import {FileLoader} from "./components/inProgress/FileLoader";
 
 export default function Experience() {
 
@@ -46,6 +48,10 @@ export default function Experience() {
                                                     <Spheres />
                                                     <Plane />
                                                     <LightsAndShadows />
+{/*
+                                                    <MyDropzone />
+*/}
+                                                    <FileLoader />
                                                 </ViewProvider>
                                             </OptionsProvider>
                                         </LevaColorDropboxProvider>

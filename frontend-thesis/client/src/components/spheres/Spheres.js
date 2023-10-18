@@ -11,6 +11,7 @@ import { useVisibility } from "../../utils/VisibilityFunction";
 import LabelsState from "../../contexts/labelsContext/LabelsState";
 import { useColorsDropbox } from "../../contexts/levaControls/colorDropbox/LevaColorDropboxContext";
 import AudioPlayer from "../../contexts/audioContext";
+import {MyDropzone} from "../inProgress/Drag&Drop";
 
 function SpheresStart() {
 
@@ -172,6 +173,7 @@ function SpheresStart() {
                 />
 
             </instancedMesh>
+
         </>
     );
 }
