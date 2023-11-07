@@ -68,12 +68,12 @@ export const LevaColorDropboxProvider = ({ children }) => {
                 return colorFromBPM;
             }
 
-            if(selectedFeature === Danceability_label){
-                const MAX_DANCEABILITY = 100
-                const fromDanceability = sphereData[instanceId].danceability;
-                const colorFromDanceability = new THREE.Color().setHSL(fromDanceability / MAX_DANCEABILITY, 1, 0.5);
-                return colorFromDanceability;
-            }
+                if(selectedFeature === Danceability_label){
+                    const MAX_DANCEABILITY = 100
+                    const fromDanceability = sphereData[instanceId].danceability;
+                    const colorFromDanceability = new THREE.Color().setHSL(fromDanceability / MAX_DANCEABILITY, 1, 0.5);
+                    return colorFromDanceability;
+                }
 
             // TEXTURE WILL BE ADDED AFTER
 

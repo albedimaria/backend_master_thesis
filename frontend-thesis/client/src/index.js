@@ -8,6 +8,8 @@ import {KeyboardControls, Loader} from '@react-three/drei'
 import {loaderStyles} from "./styles/LoaderStyles";
 import Button from "./components/inProgress/Button";
 import {MyDropzone} from "./components/inProgress/Drag&Drop";
+import Plane from "./components/plane/Plane";
+import Window from "./Window";
 // import { backgroundStyle } from "./"
 
 
@@ -48,6 +50,11 @@ root.render(
                         <Experience />
                     </Suspense>
                 </Canvas>
+
+                <Canvas>
+                    <Window />
+                </Canvas>
+                
                 <Loader
       /*              containerStyles={loaderStyles.container}
                     innerStyles={loaderStyles.inner}

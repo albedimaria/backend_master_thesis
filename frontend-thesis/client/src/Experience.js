@@ -1,5 +1,5 @@
-import {Box, OrbitControls} from "@react-three/drei";
-import React, { useState, useEffect } from "react";
+import {Box, Html, OrbitControls} from "@react-three/drei";
+import React, {useState, useEffect, useRef} from "react";
 import LightsAndShadows from "./components/inProgress/LightsAndShadows";
 import Plane from "./components/plane/Plane.js";
 import { Physics, Debug} from "@react-three/rapier";
@@ -15,20 +15,30 @@ import { LevaColorDropboxProvider} from "./contexts/levaControls/colorDropbox/Le
 import { ViewProvider } from "./contexts/levaControls/viewsControls/viewsContext";
 import {MyDropzone} from "./components/inProgress/Drag&Drop";
 import {FileLoader} from "./components/inProgress/FileLoader";
+import Button from "./components/inProgress/Button";
+import Dashboard from "./components/geometryWindow/Dashboard";
+
+
+
 
 export default function Experience() {
 
-/*  DELAY AT THE BEGINNING
-    const [isLoading, setIsLoading] = useState(true);
+    const childCanvasRef = useRef();
 
-    useEffect(() => {
-        // Simulate loading delay
-        setTimeout(() => {
-            setIsLoading(false);
-        }, 2000); // 3 seconds
-    }, []);*/
+
+    /*  DELAY AT THE BEGINNING
+        const [isLoading, setIsLoading] = useState(true);
+
+        useEffect(() => {
+            // Simulate loading delay
+            setTimeout(() => {
+                setIsLoading(false);
+            }, 2000); // 3 seconds
+        }, []);*/
 
     // target is linked to index camera
+
+
 
     return (
         <>
@@ -48,9 +58,7 @@ export default function Experience() {
                                                     <Spheres />
                                                     <Plane />
                                                     <LightsAndShadows />
-{/*
-                                                    <MyDropzone />
-*/}
+                                                    <Dashboard />
                                                     <FileLoader />
                                                 </ViewProvider>
                                             </OptionsProvider>
@@ -62,6 +70,7 @@ export default function Experience() {
                 </DataProvider>
 
             </Physics>
+
         </>
     );
 }
